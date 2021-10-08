@@ -1,15 +1,10 @@
-const express  = require('express');
-const app = express();
-const expressLayouts = require('express-ejs-layouts');
-const indexRouter = require('./routes/index.js')
+const express = require('express');
 const mysql = require('mysql');
-
-app.set('view engine','ejs');
-app.set('views',__dirname+ '/views');
-app.set('layout','./layouts/layout');
-app.use(expressLayouts);
-app.use(express.static('public'));
-
+const app = express();
+const PORT = 3000;
+app.use(express.static(__dirname));
+app.use(express.json());
+ 
 var db = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
@@ -24,6 +19,7 @@ db.connect((err) => {
     else console.log('MySQL Connected');
 });
 
-app.use('/',indexRouter);
+
+
 
 app.listen(process.env.PORT || 3000);
