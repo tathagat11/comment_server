@@ -17,7 +17,8 @@
     <script src="Scripts/leaflet.js"></script>
     <script src="Scripts/leaflet.browser.print.min.js"></script>
     <link rel="stylesheet" href="css/leaflet.css" />
-
+    <link rel="stylesheet" href="css\leaflet.contextmenu.css"/>
+    <script src="src\leaflet.contextmenu.js"></script>
     <script src="Scripts/jquery-2.1.4.min.js"></script>
     <script src="Scripts/bootstrap.min.js"></script>
     <script src="Scripts/linq.min.js"></script>
@@ -511,6 +512,8 @@
       hr {
         margin: 0;
       }
+      
+      
       .button-link:hover {
         background: #73489c;
         border: 1px solid #73489c;
@@ -527,7 +530,7 @@
       .button-link {
         border: 1px solid #73489c;
         color: #73489c;
-        background: transparent;
+        background: white;
         border-radius: 5px;
         transition: 0.5s;
         cursor: pointer;
@@ -990,6 +993,15 @@
           }
         };
       };
+      function getcomments(){
+        $.ajax({
+          url: '/getcomments',
+          contentType: 'application/json',
+          success: function(response){
+            console.log(response);
+          }
+        })
+      }
 
       function showBranches() {
         Read_Branches(); // Config from local json
@@ -1306,10 +1318,43 @@
       }
 
       function InitiateMap(choice) {
-        mymap = L.map("MapLoad").setView(
+        mymap = L.map("MapLoad",{
+    contextmenu: true,
+    contextmenuWidth: 140,
+    contextmenuItems: [{
+        text: 'Show coordinates',
+        callback: showCoordinates
+    }, {
+        text: 'Center map here',
+        callback: centerMap
+    }, '-', {
+        text: 'Zoom in',
+        icon: 'images/zoom-in.png',
+        callback: zoomIn
+    }, {
+        text: 'Zoom out',
+        icon: 'images/zoom-out.png',
+        callback: zoomOut
+    }]
+    }).setView(
           [22.760103170031, 80.8497196441866],
           5
         );
+        function showCoordinates (e) {
+            alert(e.latlng);
+        }
+        
+        function centerMap (e) {
+            mymap.panTo(e.latlng);
+        }
+        
+        function zoomIn (e) {
+            mymap.zoomIn();
+        }
+        
+        function zoomOut (e) {
+            mymap.zoomOut();
+        }
 
         var satellite = L.tileLayer(
             "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -3773,9 +3818,17 @@ function addNewPoly(oldPoly,newPoly) {
         <div style="text-align: center">
           <input
             type="button"
+            value="Comments"
+            class="button-link"
+            onclick="getcomments()"
+            style="padding: 0.5em 1em; margin: 0.5em 1em;position: absolute;right: 20px;top: 300px;"
+          /></div>
+        <div style="text-align: center">
+          <input
+            type="button"
             value="Home"
             class="button-link"
-            onclick="_cL.login()"
+            onclick=""
             style="padding: 0.5em 1em; margin: 0.5em 1em; width: 70%"
           />
         </div>
@@ -3785,7 +3838,9 @@ function addNewPoly(oldPoly,newPoly) {
         id="MapLoad"
       ></div>
     </div>
-
+    
+    
+    
     <div class="sideOpt" style="display: flex; flex-direction: column">
       <div style="flex: 1; overflow-y: auto; max-height: 300px">
         <table style="border-collapse: collapse">
@@ -3822,7 +3877,8 @@ function addNewPoly(oldPoly,newPoly) {
       ></div>
       <div id="channelList" style="padding: 0px 10px; overflow-y: auto"></div>
     </div>
-
+    
+    
     <div class="searchBox">
       <input
         type="text"

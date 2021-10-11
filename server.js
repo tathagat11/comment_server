@@ -24,4 +24,16 @@ app.get('',(req,res) => {
     res.sendFile(__dirname+"/Map.html");
 });
 
+app.route("/getcomments")
+.get(function(req,res){
+    var count = 0;
+    let sql2 = `SELECT * FROM comments LIMIT 0,50`;
+    let query = db.query(sql2, (err, results) => {
+        if(err) throw err;
+        results.push(count);
+        res.send(results);
+    });
+});
+
 app.listen(PORT);
+//${req.body.start}
