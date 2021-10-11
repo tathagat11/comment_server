@@ -1,0 +1,3887 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+
+    <meta charset="utf-8" />
+    <title>Map View</title>
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="Content/bootstrap-theme.css" rel="stylesheet" />
+    <link href="css/font-awesome.css" rel="stylesheet" />
+    <script src="Scripts/leaflet.js"></script>
+    <script src="Scripts/leaflet.browser.print.min.js"></script>
+    <link rel="stylesheet" href="css/leaflet.css" />
+
+    <script src="Scripts/jquery-2.1.4.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script src="Scripts/linq.min.js"></script>
+    <script src="Scripts/getData.js"></script>
+    <script src="Scripts/csvParser/papaparse.min.js"></script>
+    <script src="Scripts/csvParser/jsonParse.js"></script>
+
+    <link rel="stylesheet" href="Scripts/leaflet-routing-machine.css" />
+
+    <script src="Scripts/leaflet-tilelayer-colorfilter.min.js"></script>
+    <script src="Scripts/Leaflet.EdgeMarker.js"></script>
+    <script src="Scripts/leaflet.smoothmarkerbouncing.js"></script>
+    <script src="Scripts/L.Control.ZoomBox.min.js"></script>
+    <link rel="stylesheet" href="Scripts/L.Control.ZoomBox.css" />
+
+    <link rel="stylesheet" href="css/leaflet-beautify-marker-icon.css" />
+    <script src="Scripts/leaflet-beautify-marker-icon.js"></script>
+
+    <link rel="stylesheet" href="src/leaflet.draw.css" />
+    <script src="src/Leaflet.draw2.js"></script>
+    <script src="src/Leaflet.Draw.Event.js"></script>
+
+    <script type="text/javascript" src="./Scripts/jquery-2.1.4.min.js"></script>
+    <script src="./Scripts/customLibrary.js"></script>
+    <script src="./networkURL.json"></script>
+    <style>
+      .leaflet-marker-icon {
+        background: none;
+        border: none;
+      }
+
+      .leaflet-touch-icon {
+        background-color: white !important;
+        border: 1px solid black !important;
+        width: 10px !important;
+        height: 10px !important;
+      }
+
+      .polyMarker {
+        padding: 2px;
+        /* border: 1px dotted; */
+        margin: 3px;
+        background-color: rgba(0, 0, 0, 0.4);
+        font-size: 13px;
+        color: yellow;
+        font-family: consolas;
+        font-weight: bold;
+      }
+
+      .polyMarker:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      .sideOpt {
+        border: 2px solid #007988;
+        width: 217px;
+        /* height: 140px; */
+        font-size: 10px;
+        position: fixed;
+        z-index: 1000;
+        background-color: white;
+        right: 12px;
+        top: 10px;
+        color: black;
+        max-height: 85%;
+        overflow-y: auto;
+        /* color: white; */
+        /* font-family: ABeeZee; */
+        /* background-color: #32373a; */
+        /* position: absolute; */
+        /* box-shadow: 10px 9px 4px grey; */
+        /* font-size: 10px; */
+      }
+
+      .polygonMarkerList {
+        position: fixed;
+        /* border: 1px solid; */
+        bottom: 55px;
+        width: 300px;
+        right: 10px;
+        height: 200px;
+        z-index: 1010;
+        /* background-color: #fff; */
+        /* background-color: rgba(255,255,255,0.5); */
+        overflow-y: auto;
+      }
+
+      .polygonMarkerList table tr td {
+        padding: 2px;
+      }
+
+      .polyMarkerSlNo {
+        font-size: 20px;
+        border-right: 1px solid;
+      }
+
+      .dropdownFilter {
+        display: block;
+        z-index: 1000;
+        position: fixed;
+        left: 50px;
+        top: 13px;
+        background-color: white;
+        padding: 1px 5px;
+        min-width: 250px;
+      }
+
+      .Map_Logo {
+        flex-direction: row;
+        justify-content: center;
+        padding: 5px 5px;
+        /* margin-bottom: 5px; */
+        align-self: center;
+        display: flex;
+      }
+
+      .mySelect {
+        background-color: #007988;
+        color: white;
+        border: 1px dotted #4baab9;
+      }
+
+      .mapType {
+        position: fixed;
+        bottom: 8px;
+        left: 94px;
+        z-index: 1000;
+        color: blue;
+        font-size: 12px;
+        font-family: consolas;
+        background-color: white;
+        padding: 2px;
+      }
+
+      .mapType span {
+        margin: 1px;
+        cursor: pointer;
+      }
+
+      .searchBox {
+        position: fixed;
+        z-index: 1000;
+        right: 34px;
+        bottom: 28px;
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+
+      .searchBox input[type="text"] {
+        border: 0px;
+        border-bottom: 2px solid #f15d2f;
+        background-color: transparent;
+        color: red;
+        font-family: consolas;
+        float: left;
+      }
+
+      .searchBox span {
+        font-size: 17px;
+        font-weight: bolder;
+        color: #f15d2f;
+        margin-left: -16px;
+        cursor: pointer;
+        float: left;
+      }
+
+      .leaflet-control-zoom-in,
+      .leaflet-control-zoom-out {
+        border: 1px dotted !important;
+        color: #007988 !important;
+        background-color: white !important;
+        margin: 2px !important;
+      }
+
+      .leaflet-control-zoom {
+        border: none !important;
+      }
+
+      .left {
+        width: 3px;
+        background-color: red;
+      }
+
+      .head {
+        font-weight: bold;
+        background-color: #5592ad;
+      }
+
+      .label {
+        color: orange;
+        width: 50px;
+      }
+
+      .address {
+        margin-left: 3px;
+        border-left: 1px dotted orange;
+        padding-left: 2px;
+        font-style: italic;
+      }
+
+      .closeMe,
+      .options {
+        background-color: Red;
+        color: white;
+        text-align: center;
+        padding: 3px;
+      }
+
+      .options {
+        float: left;
+      }
+
+      .optionBox {
+        position: absolute;
+        background-color: red;
+      }
+
+      .divChkbox {
+        padding: 3px;
+        border-bottom: 1px dashed;
+        font-weight: bold;
+      }
+
+      .divChkbox:hover {
+        background-color: sienna;
+        font-weight: bold;
+      }
+
+      .markerTooltip {
+        height: 16px;
+        width: 31px;
+        border: 1px solid #b3b3b3;
+        background-color: #007988;
+        margin-top: -40px;
+        margin-left: -8px;
+        text-align: center;
+        color: white;
+      }
+
+      .ticker {
+        position: fixed;
+        text-align: center;
+        top: 10px;
+        background-color: #f9b29c;
+        color: #8f280c;
+        padding: 5px;
+        z-index: 1000;
+        width: 400px;
+        font-size: 12px;
+        left: calc(50% - 200px);
+        border: 1px solid;
+      }
+
+      .mapFile {
+        position: fixed;
+        bottom: 8px;
+        left: 166px;
+        z-index: 1000;
+        color: blue;
+        font-size: 12px;
+        font-family: consolas;
+        background-color: white;
+        padding: 2px;
+      }
+
+      .IndexBox {
+        float: left;
+        margin: 2px;
+        width: 15%;
+      }
+
+      #CustomInput {
+        position: fixed;
+        bottom: -200px;
+        left: 100px;
+        z-index: 1000;
+        background-color: white;
+        font-size: 12px;
+        font-family: consolas;
+        width: 550px;
+        text-align: center;
+        padding: 8px;
+        border-radius: 25px;
+        transition-duration: 1s;
+      }
+
+      #DownloadBtns {
+        position: fixed;
+        right: 225px;
+        bottom: 10px;
+        z-index: 1000;
+      }
+
+      #CustomOutput {
+        position: fixed;
+        bottom: -300px;
+        right: 200px;
+        z-index: 1000;
+        background-color: white;
+        font-size: 12px;
+        font-family: consolas;
+        width: 400px;
+        padding: 18px;
+        border-radius: 25px;
+        transition-duration: 1s;
+      }
+
+      #CustomOutput td {
+        padding: 5px 8px;
+        border: 1px solid;
+      }
+
+      #CustomOutput table {
+        margin-bottom: 10px;
+      }
+
+      a.boxclose {
+        float: right;
+        margin-top: -35px;
+        margin-right: 0;
+        cursor: pointer;
+        color: #fff;
+        border: 1px solid #aeaeae;
+        border-radius: 30px;
+        background: #605f61;
+        font-size: 31px;
+        font-weight: bold;
+        display: inline-block;
+        line-height: 0px;
+        padding: 11px 3px;
+      }
+
+      .boxclose:before {
+        content: "×";
+      }
+
+      #grpSwitch {
+        position: fixed;
+        bottom: 0;
+        right: 142px;
+        z-index: 1000;
+        border-radius: 9px;
+        height: 20px;
+        width: 100px;
+      }
+
+      #grpSwitch-button {
+        width: 100%;
+        background-image: none;
+        background-color: #007988;
+        color: white;
+        border: none;
+        height: 100%;
+        font-size: 10px;
+      }
+
+      #RestInd {
+        float: right;
+        margin-top: 23px;
+        margin-right: 0;
+        cursor: pointer;
+        color: #fff;
+        border: 1px solid #aeaeae;
+        border-radius: 30px;
+        background: #605f61;
+        display: inline-block;
+        line-height: 0px;
+        padding: 11px 3px;
+      }
+
+      #ClustContext {
+        position: fixed;
+        height: 93px;
+        width: 135px;
+        z-index: 10010;
+        background-color: white;
+        border-radius: 5px;
+        padding: 3px;
+        text-align: center;
+        font-size: 10px;
+        box-shadow: 0px 0px 5px #888888;
+      }
+
+      #ClustContext input {
+        border: 1px solid blue;
+      }
+
+      #ClustContext hr {
+        margin: 0px;
+      }
+
+      #ClustContext div {
+        cursor: pointer;
+        padding: 4px;
+      }
+
+      #ClustContext div:hover {
+        background-color: darkgrey;
+        font-weight: bold;
+      }
+
+      #clustrenameBtn {
+        background-image: none;
+        background-color: white;
+        color: #333;
+        border: none;
+        width: 100%;
+        padding: 4px;
+      }
+
+      #clustrenameBtn:hover {
+        background-color: darkgrey;
+        font-weight: bold;
+      }
+
+      #clustrenameBtn.disabled {
+        background-color: white;
+      }
+
+      #clustrenameBtn.disabled:hover {
+        background-color: white;
+        font-weight: bold;
+      }
+      .load-Comp {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .load-Div {
+        width: 100px;
+        height: 100px;
+        position: fixed;
+        top: calc(50% - 50px);
+        left: calc(50% - 50px);
+        text-align: center;
+        padding: 8px;
+        background-color: white;
+        border-radius: 50%;
+        z-index: 1001;
+      }
+      .custom-spinner {
+        display: inline-block;
+        width: 85px;
+        height: 85px;
+        vertical-align: text-bottom;
+        border: 10px solid #73489c;
+        border-right-color: transparent;
+        border-radius: 50%;
+        -webkit-animation: spin 0.75s linear infinite;
+        animation: spin 0.75s linear infinite;
+      }
+
+      /* Safari */
+      @-webkit-keyframes spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .subDiv {
+        background: #fff;
+        border-radius: 0;
+        border: 1px solid #d1d1d1;
+        margin-top: 8vh;
+        min-height: 100px;
+      }
+      .Heading {
+        font-size: 24px;
+        text-align: center;
+        font-weight: 300;
+        color: #807d6e;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0 10px;
+      }
+      hr {
+        margin: 0;
+      }
+      .button-link:hover {
+        background: #73489c;
+        border: 1px solid #73489c;
+        color: #fff;
+        border-radius: 5px;
+        transition: 0.5s;
+        cursor: pointer;
+        padding: 1em 1.5em;
+        margin: 1em 0.5em;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .button-link {
+        border: 1px solid #73489c;
+        color: #73489c;
+        background: transparent;
+        border-radius: 5px;
+        transition: 0.5s;
+        cursor: pointer;
+        padding: 1em 1.5em;
+        margin: 1em 0.5em;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+      .buttonClose-link:hover {
+        background: #f15d2f;
+        border: 1px solid #f15d2f;
+        color: #fff;
+        border-radius: 5px;
+        transition: 0.5s;
+        cursor: pointer;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .buttonClose-link {
+        border: 1px solid #f15d2f;
+        color: #f15d2f;
+        background: transparent;
+        border-radius: 5px;
+        transition: 0.5s;
+        cursor: pointer;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+      .CustBtn-link {
+        border: 1px solid #f15d2f;
+        color: #f15d2f;
+        background: #fff;
+        border-radius: 5px;
+        transition: 0.5s;
+        cursor: pointer;
+        text-decoration: none;
+        text-transform: uppercase;
+        padding: 5px 7px;
+      }
+      .CustBtn-link:hover {
+        background: #f15d2f;
+        border: 1px solid #f15d2f;
+        color: #fff;
+        border-radius: 5px;
+        transition: 0.5s;
+        cursor: pointer;
+        text-decoration: none;
+        text-transform: uppercase;
+        padding: 5px 7px;
+      }
+      .MainDiv {
+        display: flex;
+        flex-direction: column;
+        background-image: url("./images/landingBG1.JPG");
+        height: 100%;
+        width: 100%;
+        position: absolute;
+      }
+      .layer {
+        height: 100%;
+        width: 100%;
+        background-color: black;
+        opacity: 0.5;
+        position: absolute;
+      }
+      .onTop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+      }
+      .branchButton {
+        position: fixed;
+        left: 12px;
+        bottom: 12px;
+        z-index: 999;
+        border-radius: 10px;
+      }
+      .PolyLabel {
+        background: rgba(255, 255, 255, 0);
+        border: 0;
+        border-radius: 0px;
+        box-shadow: 0 0px 0px;
+        text-shadow: 0px 0px 5px #fff;
+      }
+      #RangeSlide {
+        padding: 5px;
+      }
+      .greenTick {
+        padding: 3px;
+        background-color: #50ee42;
+        border-radius: 25%;
+        cursor: pointer;
+      }
+      .greenTick:hover {
+        background-color: #22c414;
+      }
+      .footer-basic {
+        font-family: serif;
+        padding: 20px 0;
+        background-color: transparent;
+        color: #4b4c4d;
+        bottom: 0;
+        position: fixed;
+        width: 100%;
+        z-index: 975;
+      }
+      .footer-basic .copyright {
+        margin-top: 15px;
+        text-align: center;
+        font-size: 15px;
+        color: #096666;
+        margin-bottom: 0;
+      }
+      .mrkr-label {
+        font-family: "IM Fell DW Pica", serif;
+        color: #fec623;
+        font-size: 50%;
+        line-height: 10px;
+        cursor: inherit;
+      }
+      .wrd-label {
+        background: rgba(255, 255, 255, 0);
+        border: 0;
+        border-radius: 0px;
+        box-shadow: 0 0px 0px;
+        text-shadow: 0px 0px 5px #fff;
+      }
+      .dropchecks {
+        width: 100%;
+        position: relative;
+        display: inline-block;
+      }
+      .dropchecks-items {
+        position: absolute;
+        border: 1px solid #d4d4d4;
+        border-bottom: none;
+        border-top: none;
+        z-index: 99;
+        top: 100%;
+        left: 0;
+        right: 0;
+        overflow-y: auto;
+        max-height: 300px;
+      }
+
+      .dropchecks-items div {
+        padding: 10px;
+        cursor: pointer;
+        /* background-color: #fff; */
+        border-bottom: 1px solid #d4d4d4;
+      }
+
+      /* .dropchecks-items div:hover {
+            background-color: #e9e9e9;
+        } */
+
+      .leaflet-top,
+      .leaflet-left {
+        display: flex !important;
+        flex-direction: row !important;
+      }
+      .leaflet-control-zoom,
+      .leaflet-bar .leaflet-control {
+        display: flex;
+        flex-direction: row;
+      }
+      .leaflet-bottom {
+        bottom: 50px !important;
+      }
+      .upload-layer {
+        z-index: 1000;
+        bottom: 0px;
+        position: fixed;
+        margin-left: 5px;
+        width: 100px;
+        height: 40px;
+        background: white;
+      }
+    </style>
+    <script>
+      
+
+      // Booleans
+      let loadHeatMap = false,
+        hasWard = false,
+        hasPop = false,
+        hasOrdr = false,
+        hasdpl = false,
+        movedFlag = false,
+        legentLoaded = false,
+        ischangedDST = false,
+        _isEditedBOUNDARY = false;
+
+      // Numbers
+      let MAXORDER = 0,
+        MINORDER = 0,
+        SELECT_RANGE = 0;
+
+      // Strings
+      let BUCKET_NAME = "",
+        MASTER_FILE = "",
+        ORDER_FILE = "";
+
+      // Objects
+      let CONFIG = {},
+        LOAD = { KML_WD: false, KML_DB: false, CSV: false },
+        Poly_id_Layer = {},
+        Poly_subLayers = {},
+        Heat_id_Layer = {},
+        WardData = {},
+        Ward_mx_Data = {},
+        options = { modal: true, title: "Box area zoom" },
+        groupList = {},
+        dist_Cust = {},
+        _editedBOUNDARY = {};
+      // Arrays
+      let Data,
+        kmlContentGlobal = [],
+        polyDataGlobal = [],
+        ids = [],
+        Clusters = [],
+        Clusters2 = [],
+        Checked_Clusters = [],
+        Moved_Clusters = [],
+        PolyLayers = [],
+        PolyInnerLayers = [],
+        ColourValues = [
+          "FF0000",
+          "00FF00",
+          "0000FF",
+          "FFFF00",
+          "FF00FF",
+          "00FFFF",
+          "000000",
+          "800000",
+          "008000",
+          "000080",
+          "808000",
+          "800080",
+          "008080",
+          "808080",
+          "C00000",
+          "00C000",
+          "0000C0",
+          "C0C000",
+          "C000C0",
+          "00C0C0",
+          "C0C0C0",
+          "400000",
+          "004000",
+          "000040",
+          "404000",
+          "400040",
+          "004040",
+          "404040",
+          "200000",
+          "002000",
+          "000020",
+          "202000",
+          "200020",
+          "002020",
+          "202020",
+          "600000",
+          "006000",
+          "000060",
+          "606000",
+          "600060",
+          "006060",
+          "606060",
+          "A00000",
+          "00A000",
+          "0000A0",
+          "A0A000",
+          "A000A0",
+          "00A0A0",
+          "A0A0A0",
+          "E00000",
+          "00E000",
+          "0000E0",
+          "E0E000",
+          "E000E0",
+          "00E0E0",
+          "E0E0E0",
+        ],
+        PolyColours = [
+          "E00000",
+          "00E000",
+          "0000E0",
+          "E0E000",
+          "E000E0",
+          "00E0E0",
+          "E0E0E0",
+          "A00000",
+          "00A000",
+          "0000A0",
+          "A0A000",
+          "A000A0",
+          "00A0A0",
+          "A0A0A0",
+          "600000",
+          "006000",
+          "000060",
+          "606000",
+          "600060",
+          "006060",
+          "606060",
+          "200000",
+          "002000",
+          "000020",
+          "202000",
+          "200020",
+          "002020",
+          "202020",
+          "400000",
+          "004000",
+          "000040",
+          "404000",
+          "400040",
+          "004040",
+          "404040",
+          "C00000",
+          "00C000",
+          "0000C0",
+          "C0C000",
+          "C000C0",
+          "00C0C0",
+          "C0C0C0",
+          "800000",
+          "008000",
+          "000080",
+          "808000",
+          "800080",
+          "008080",
+          "808080",
+          "FF0000",
+          "00FF00",
+          "0000FF",
+          "FFFF00",
+          "FF00FF",
+          "00FFFF",
+          "000000",
+        ],
+        /* interchange the variable names to change the low-high format */
+
+        // FOR GREEN TO RED - LOW-GREEN - HIGH-RED
+        TMP_Heat_Color_Strip = [
+          "00FF00",
+          "12FF00",
+          "24FF00",
+          "35FF00",
+          "47FF00",
+          "58FF00",
+          "6AFF00",
+          "7CFF00",
+          "8DFF00",
+          "9FFF00",
+          "B0FF00",
+          "C2FF00",
+          "D4FF00",
+          "E5FF00",
+          "F7FF00",
+          "FFF600",
+          "FFE400",
+          "FFD300",
+          "FFC100",
+          "FFAF00",
+          "FF9E00",
+          "FF8C00",
+          "FF7B00",
+          "FF6900",
+          "FF5700",
+          "FF4600",
+          "FF3400",
+          "FF2300",
+          "FF1100",
+          "FF0000",
+        ],
+        // FOR RED TO GREEN - LOW-RED - HIGH-GREEN
+        Heat_Color_Strip = [
+          "FF0000",
+          "FF1100",
+          "FF2300",
+          "FF3400",
+          "FF4600",
+          "FF5700",
+          "FF6900",
+          "FF7B00",
+          "FF8C00",
+          "FF9E00",
+          "FFAF00",
+          "FFC100",
+          "FFD300",
+          "FFE400",
+          "FFF600",
+          "F7FF00",
+          "E5FF00",
+          "D4FF00",
+          "C2FF00",
+          "B0FF00",
+          "9FFF00",
+          "8DFF00",
+          "7CFF00",
+          "6AFF00",
+          "58FF00",
+          "47FF00",
+          "35FF00",
+          "24FF00",
+          "12FF00",
+          "00FF00",
+        ];
+
+      // Custom
+      var mymap = null;
+      var markers = new L.FeatureGroup();
+      var wrdLabels = new L.FeatureGroup();
+      var WholePolygon = new L.FeatureGroup();
+      var _editLayer;
+      var _drawControl;
+      var _prevLayer;
+      var _editMode = false;
+      var markerArray = new Array();
+      var Prev_HeatLayer;
+      var editedLayer;
+
+      window.onload = async function () {
+        //await _vD.validate(sessionStorage.getItem('username'),sessionStorage.getItem('Type'),sessionStorage.getItem('token'));
+        let page_title = sessionStorage.getItem("sitename");
+        if (page_title && page_title != "")
+          document.title = `Map View - ${page_title}`;
+        $("#siteDetail").html(
+          `${sessionStorage.getItem("sitename")} - ${sessionStorage.getItem(
+            "outlets"
+          )} Outlets (within) <hr/>`
+        );
+        //if (sessionStorage.getItem("token") != "" && sessionStorage.getItem("token") != null && sessionStorage.getItem("username") != "" && sessionStorage.getItem("username") != null) {
+        $("#loader").hide();
+        $("#csv_upload").hide();
+        $("#kml_upload").hide();
+        $("#BranchList").hide();
+        InitiateMap("light");
+        //fetch_n_load();
+        //showBranches();
+        kmlContentGlobal=await readStaticKML("./kmlFILE.kml");
+        /* }
+            else{
+                window.open("index.html", "_self");
+            } */
+
+        document.onclick = function (e) {
+          var innerParent = document.getElementById("statedropchecks-list");
+          var outerParent = document.getElementById("GroupSelect");
+          var target = $(e.target);
+          var test = this;
+          if (innerParent) {
+            if (innerParent.contains(target[0])) {
+            } else if (outerParent.contains(target[0])) openOrcloseDistr(true);
+            else openOrcloseDistr();
+          }
+        };
+      };
+
+      function showBranches() {
+        Read_Branches(); // Config from local json
+        //Fetch_Branches(); // Config from dynamoDB
+        $("#loader").hide();
+        $("#BranchList").show();
+      }
+
+      async function Read_Branches() {
+        $("#loader").show();
+        var ConfigFile = "./FileConfig.json";
+        try {
+          let response = await fetch(ConfigFile);
+          if (response.ok) {
+            let data = await response.json();
+            var branchLinks = "";
+            for (var key in data) {
+              branchLinks +=
+                '<input type="button" class="button-link" value="' +
+                key +
+                '" onClick="loadBranchData(\'' +
+                key +
+                "')\"/>";
+            }
+            $("#BRANCHES").html(branchLinks);
+          } else {
+            console.warn("Configuration file failed to load");
+          }
+        } catch {
+          console.warn("Configuration file failed to load");
+        }
+        $("#loader").hide();
+      }
+      async function Fetch_Branches() {
+        $("#loader").show();
+        try {
+          let request = {
+            api: "getData",
+            token: sessionStorage.getItem("token"),
+            user: sessionStorage.getItem("username"),
+            data: {
+              operation: "getConfigBranches",
+            },
+            config: {
+              orgName: sessionStorage.getItem("orgName"),
+            },
+          };
+          let response = await ajax_POST(
+            networkURL.URL + networkURL.service,
+            request
+          );
+          if (response.status == "SUCCESS") {
+            var branchLinks = "";
+            for (var i = 0; i < response.data.branches.length; i++) {
+              var key = response.data.branches[i];
+              branchLinks +=
+                '<input type="button" class="button-link" value="' +
+                key +
+                '" onClick="loadBranchData(\'' +
+                key +
+                "')\"/>";
+            }
+            $("#BRANCHES").html(branchLinks);
+          } else if (data.error == "Unauthorized Token") {
+            sessionStorage.clear();
+            alert("Session Expired login again");
+            window.open("index.html", "_self");
+          }
+        } catch (err) {
+          console.warn("Configuration file failed to load");
+          console.error(err);
+          if (err.responseJSON) {
+            if (err.responseJSON.error == "Unauthorized token") {
+              alert(" Login expired \n please login again.");
+              _cL.logout();
+            }
+          }
+        }
+        $("#loader").hide();
+      }
+      function loadBranchData(branch) {
+        UnbindFilters();
+        clearMarkers();
+        clearPolygons();
+        $("#BranchList").hide();
+        Read_BranchConfig(branch); // Config from local json
+        //Fetch_BranchConfig(branch); // Config from dynamoDB
+      }
+
+      function UnbindFilters() {
+        $("#PlotAllCheckBox").html(null);
+        $("#GroupSelect").html(null);
+        $("#SubGroupSelect").html(null);
+        $("#Routecolorindicator").html(null);
+        //$("#PolySelect").html(null);
+        $("#wardSelect").html(null);
+        $("#distSelect").html(null);
+      }
+
+      /*Function  for getting url values*/
+      function getUrlVars() {
+        var vars = [],
+          hash;
+        var hashes = window.location.href
+          .slice(window.location.href.indexOf("?") + 1)
+          .split("&");
+        for (var i = 0; i < hashes.length; i++) {
+          hash = hashes[i].split("=");
+          vars.push(hash[0]);
+          vars[hash[0]] = hash[1];
+        }
+        return vars;
+      }
+
+      async function readStaticKML(filename) {
+        let response = await fetch(filename);
+        if (response.ok) {
+          let data = await response.text();
+          var polyData = ParseKML(data, false, 0);
+        }
+        return polyData;
+      }
+
+      async function Read_BranchConfig(branch) {
+        $("#loader").show();
+        var ConfigFile = "./FileConfig.json";
+        loadHeatMap = false;
+        LOAD.CSV = true;
+        LOAD.KML_WD = true;
+        LOAD.KML_DB = true;
+        try {
+          let response = await fetch(ConfigFile);
+          if (response.ok) {
+            let data = await response.json();
+            if (!data.hasOwnProperty(branch)) {
+              showBranches();
+              return;
+            }
+            CONFIG = data[branch];
+
+            get_All_Data(
+              (data) => {
+                loadHeatMap = false;
+                hasWard = false;
+                hasPop = false;
+                hasOrdr = false;
+                var loadLOCS = false;
+                if (data.status == "SUCCESS") {
+                  hasOrdr = data.data.hasOrdr;
+                  if (data.data.hasOwnProperty("WardData"))
+                    WardData = data.data.WardData;
+                  if (data.data.hasOwnProperty("Ward_mx_Data"))
+                    Ward_mx_Data = data.data.Ward_mx_Data;
+                  if (data.data.hasOwnProperty("Ward_Stat")) {
+                    hasWard = data.data.Ward_Stat.hasWard;
+                    hasPop = data.data.Ward_Stat.hasPop;
+                    if (hasWard) loadHeatMap = true;
+                    else loadHeatMap = false;
+                  }
+                  if (data.data.hasOwnProperty("LocData")) loadLOCS = true;
+                } else if (data.error == "Unauthorized Token") {
+                  sessionStorage.clear();
+                  alert("Session Expired login again");
+                  window.open("index.html", "_self");
+                } else {
+                  console.error(data);
+                }
+                if (loadLOCS) {
+                  Data = data.data.LocData;
+                  bindChannels(data.data.CHANNELS);
+                  groupAndPlot(data.data.SUBGROUPS, data.data.GROUPS);
+                } else {
+                  LOAD.CSV = false;
+                  if (!LOAD.CSV && !LOAD.KML_WD && !LOAD.KML_DB)
+                    $("#loader").hide();
+                }
+              },
+              (err) => {
+                console.log("error");
+                console.log(err);
+                if (err.responseJSON) {
+                  if (err.responseJSON.error == "Unauthorized token") {
+                    alert(" Login expired \n please login again.");
+                    _cL.logout();
+                  }
+                }
+                LOAD.CSV = false;
+                if (!LOAD.CSV && !LOAD.KML_WD && !LOAD.KML_DB)
+                  $("#loader").hide();
+              }
+            );
+            clearPolygons();
+            if (CONFIG.wardFile != null && CONFIG.wardFile != "")
+              FetchKMLData_Ward();
+            else LOAD.KML_WD = false;
+            if (CONFIG.kmlFile != null && CONFIG.kmlFile != "")
+              FetchKMLData_DB();
+            else LOAD.KML_DB = false;
+          } else {
+            LOAD.CSV = false;
+            LOAD.KML_WD = false;
+            LOAD.KML_DB = false;
+            console.warn("Configuration file failed to load");
+          }
+        } catch (err) {
+          LOAD.CSV = false;
+          LOAD.KML = false;
+          console.warn("Configuration file failed to load");
+          console.error(err);
+        }
+        if (!LOAD.CSV && !LOAD.KML_WD && !LOAD.KML_DB) $("#loader").hide();
+      }
+      async function Fetch_BranchConfig(branch) {
+        $("#loader").show();
+        var ConfigFile = "./FileConfig.json";
+        loadHeatMap = false;
+        LOAD.CSV = true;
+        LOAD.KML = true;
+        try {
+          let request = {
+            api: "getData",
+            token: sessionStorage.getItem("token"),
+            user: sessionStorage.getItem("username"),
+            data: {
+              operation: "getConfigData",
+            },
+            config: {
+              orgName: sessionStorage.getItem("orgName"),
+              branch: branch,
+            },
+          };
+          let response = await ajax_POST(
+            networkURL.URL + networkURL.service,
+            request
+          );
+          if (response.status == "SUCCESS") {
+            CONFIG = response.data.config;
+
+            get_All_Data(
+              (data) => {
+                loadHeatMap = false;
+                hasWard = false;
+                hasPop = false;
+                hasOrdr = false;
+                var loadLOCS = false;
+                if (data.status == "SUCCESS") {
+                  if (data.data.hasOwnProperty("WardData"))
+                    WardData = data.data.WardData;
+                  if (data.data.hasOwnProperty("Ward_mx_Data"))
+                    Ward_mx_Data = data.data.Ward_mx_Data;
+                  if (data.data.hasOwnProperty("Ward_Stat")) {
+                    hasWard = data.data.Ward_Stat.hasWard;
+                    hasOrdr = data.data.Ward_Stat.hasOrdr;
+                    hasPop = data.data.Ward_Stat.hasPop;
+                    if (hasWard) loadHeatMap = true;
+                    else loadHeatMap = false;
+                  }
+                  if (data.data.hasOwnProperty("LocData")) loadLOCS = true;
+                } else if (data.error == "Unauthorized Token") {
+                  sessionStorage.clear();
+                  alert("Session Expired login again");
+                  window.open("index.html", "_self");
+                } else {
+                  console.error(data);
+                }
+                if (loadLOCS) {
+                  Data = data.data.LocData;
+                  bindChannels(data.data.CHANNELS);
+                  groupAndPlot(data.data.SUBGROUPS, data.data.GROUPS);
+                } else LOAD.CSV = false;
+              },
+              (err) => {
+                console.log("error");
+                console.log(err);
+                if (err.responseJSON) {
+                  if (err.responseJSON.error == "Unauthorized token") {
+                    alert(" Login expired \n please login again.");
+                    _cL.logout();
+                  }
+                }
+                LOAD.CSV = false;
+                LOAD.KML = false;
+                if (!LOAD.CSV && !LOAD.KML_WD && LOAD.KML_DB)
+                  $("#loader").hide();
+              }
+            );
+            if (CONFIG.wardFile != null && CONFIG.wardFile != "")
+              FetchKMLData_Ward();
+            else LOAD.KML_WD = false;
+            if (CONFIG.kmlFile != null && CONFIG.kmlFile != "")
+              FetchKMLData_DB();
+            else LOAD.KML_WD = false;
+          } else if (data.error == "Unauthorized Token") {
+            sessionStorage.clear();
+            alert("Session Expired login again");
+            window.open("index.html", "_self");
+          } else {
+            LOAD.CSV = false;
+            LOAD.KML_WD = false;
+            LOAD.KML_DB = false;
+            console.warn("Configuration file failed to load");
+            //$("#csv_upload").show();
+            //$("#kml_upload").show();
+          }
+        } catch (err) {
+          LOAD.CSV = false;
+          LOAD.KML = false;
+          console.warn("Configuration file failed to load");
+          console.error(err);
+          //$("#csv_upload").show();
+          //$("#kml_upload").show();
+        }
+        if (!LOAD.CSV && !LOAD.KML_WD && !LOAD.KML_DB) $("#loader").hide();
+      }
+
+      function InitiateMap(choice) {
+        mymap = L.map("MapLoad").setView(
+          [22.760103170031, 80.8497196441866],
+          5
+        );
+
+        var satellite = L.tileLayer(
+            "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            {
+              attribution:
+                "&copy <a href='http://openstreetmap.org'>OpenStreetMap</a>",
+              //filter: defaultToDarkFilter
+            }
+          ),
+          /* normal = L.tileLayer('https://maps.dhisigma.com/osm_tiles/{z}/{x}/{y}.png', {
+                    attribution: "&copy <a href='http://openstreetmap.org'>OpenStreetMap</a>"
+                    //filter: defaultToDarkFilter
+                }), */
+          normal = L.tileLayer(
+            "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+            {
+              maxZoom: 20,
+              subdomains: ["mt0", "mt1", "mt2", "mt3"],
+            }
+          ),
+          //http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png
+          toner = L.tileLayer(
+            "http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png",
+            {
+              attribution:
+                "&copy <a href='http://openstreetmap.org'>OpenStreetMap</a>",
+              //filter: defaultToDarkFilter
+            }
+          );
+
+        let baseLayers = {
+          satellite: satellite,
+          normal: normal,
+          toner: toner,
+        };
+
+        L.control.zoomBox(options).addTo(mymap);
+
+        L.control
+          .layers(baseLayers, null, { position: "topleft" })
+          .addTo(mymap);
+
+        //L.control.browserPrint().addTo(mymap);
+
+        mapColor(choice);
+
+        //PlotPoints(false);
+      }
+
+      function mapColor(choice) {
+        //mymap.removeLayer(markers);
+        //markers = new L.FeatureGroup();
+        var defaultToDarkFilter;
+
+        if (choice == "light") {
+          defaultToDarkFilter = ["grayscale:0%", "invert:0%"];
+        } else if (choice == "gray") {
+          defaultToDarkFilter = ["grayscale:100%", "invert:0%"];
+        } else if (choice == "darkgray") {
+          defaultToDarkFilter = ["grayscale:100%", "invert:100%"];
+        } else if (choice == "dark") {
+          defaultToDarkFilter = ["grayscale:0%", "invert:100%"];
+        }
+
+        /* L.tileLayer.colorFilter('https://maps.dhisigma.com/osm_tiles/{z}/{x}/{y}.png', {
+                attribution: "&copy <a href='http://openstreetmap.org'>OpenStreetMap</a>",
+                filter: defaultToDarkFilter
+            }).addTo(mymap); */
+        var tile_layer = L.tileLayer(
+          "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+          {
+            maxZoom: 20,
+            subdomains: ["mt0", "mt1", "mt2", "mt3"],
+          }
+        );
+        tile_layer.addTo(mymap);
+        
+        mymap.on(L.Draw.Event.EDITED, function (e) {
+          var layers = e.layers;
+          layers.eachLayer(function (layer) {
+            if (layer instanceof L.Polygon) {
+              var polygon = layer.toGeoJSON();
+              var name = polygon.properties.name;
+              _editedBOUNDARY[name] = polygon.geometry;
+              if (!_isEditedBOUNDARY) {
+                _isEditedBOUNDARY = true;
+                var saveBtn = document.createElement("div");
+                saveBtn.setAttribute("id", "uploadLyrBtn");
+                saveBtn.setAttribute("class", "upload-layer");
+                saveBtn.innerHTML = `<button class="upload-layer button-link" onclick="uploadLayer()">Upload</button>`;
+                document.getElementById("MapLoad").appendChild(saveBtn);
+              }
+            }
+          });
+        });
+        mymap.on(L.Draw.Event.CREATED, function (e) {
+        var type = e.layerType,
+            layer = e.layer;
+        if (type === 'polygon') {
+          var polygon = layer.toGeoJSON();
+          layer.addTo(mymap);
+          polygon.properties.name = prompt('Please enter distributor name:'); 
+          polyDataGlobal = addNewPoly(kmlContentGlobal,polygon);
+          //writetofile(polyDataGlobal);
+          ParseKML(polyDataGlobal);
+          mymap.removeLayer(layer);
+          createNewFile('./trial.txt',polyDataGlobal);
+        }
+      }
+        );
+      } 
+
+      /// APPLICATION FUNCTIONS
+      ///
+async function createNewFile(filename,kmlvar){
+  let response = await fetch(filename,{method:'POST',body:kmlvar});
+  if(response.ok){
+    console.log('file posted');
+  }
+}
+async function deleteStaticFile(filename){
+  let response = await fetch(filename,{method: 'delete'});
+  if (response.ok) {
+    console.log('file deleted');
+  }
+}
+function addNewPoly(oldPoly,newPoly) {
+    if (!oldPoly) {
+      return;
+    }
+    
+    var placemarks = "";
+    for (var key in oldPoly) {
+      var coordinates = "";
+      var poly = oldPoly[key];
+      var cordArray = poly.geometry.coordinates[0];
+      for (var i = 0; i < cordArray.length; i++) {  
+        let coordinatesNew = "";
+        for (var i = 0; i < cordArray.length; i++) {
+          var tabing = `\t`;
+          if (coordinatesNew != "") {
+            coordinatesNew += "\n";
+            tabing = `\t\t\t\t`;
+          }
+          coordinatesNew += `${tabing}${cordArray[i][0]},${cordArray[i][1]},0`;
+
+        }
+         coordinates +=
+       `<coordinates>
+            ${coordinatesNew}
+            </coordinates>`;
+        }
+       if (placemarks != "") placemarks += "\n";
+      placemarks += `<Placemark>
+    <name>${poly.properties.name}</name>
+    <Polygon>
+    <outerBoundaryIs>
+        <LinearRing>
+            <tessellate>1</tessellate>
+            ${coordinates}
+            </LinearRing>
+    </outerBoundaryIs>
+    </Polygon>
+</Placemark>`; 
+    } 
+    var coordinates = "";
+      var cordArray = newPoly.geometry.coordinates[0];
+      for (var i = 0; i < cordArray.length; i++) {  
+        let coordinatesNew = "";
+        for (var i = 0; i < cordArray.length; i++) {
+          var tabing = `\t`;
+          if (coordinatesNew != "") {
+            coordinatesNew += "\n";
+            tabing = `\t\t\t\t`;
+          }
+          coordinatesNew += `${tabing}${cordArray[i][0]},${cordArray[i][1]},0`;
+
+        }
+         coordinates +=
+       `<coordinates>
+            ${coordinatesNew}
+            </coordinates>`;
+        }
+       if (placemarks != "") placemarks += "\n";
+      placemarks += `<Placemark>
+    <name>${newPoly.properties.name}</name>
+    <Polygon>
+    <outerBoundaryIs>
+        <LinearRing>
+            <tessellate>1</tessellate>
+            ${coordinates}
+            </LinearRing>
+    </outerBoundaryIs>
+    </Polygon>
+</Placemark>`; 
+      
+     kmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+    <name>Ditributor Boundary</name>
+    ${placemarks}
+</Document>
+</kml>`;
+    return kmlContent; 
+} 
+      function selected(bval) {
+        //select all or reset if in select all bval is true
+        $("input[name='Clusters']").prop("checked", bval);
+        if (bval) {
+          Checked_Clusters = [];
+          Moved_Clusters = [];
+        } else {
+          Checked_Clusters = ids.slice();
+          Moved_Clusters = ids.slice();
+        }
+
+        PlotPoints(true);
+      }
+      function checkchange(clusvalue) {
+        //on check box click event selection
+        LOAD.CSV = true;
+        $("#loader").show();
+        var index = Checked_Clusters.indexOf(clusvalue);
+        if (index < 0) {
+          Checked_Clusters.push(clusvalue);
+          Checked_Clusters = Checked_Clusters.filter(onlyUnique);
+          Moved_Clusters.push(clusvalue);
+          Moved_Clusters = Moved_Clusters.filter(onlyUnique);
+        } else {
+          Checked_Clusters.splice(index, 1);
+          Moved_Clusters.splice(index, 1);
+        }
+
+        PlotPoints(true);
+        //LOAD.CSV = false;
+        //$("#loader").hide();
+      }
+
+      function allChannel(allChannel) {
+        var isChecked = allChannel.checked;
+        var channels = document.getElementsByName("Channels");
+        for (var i = 0; i < channels.length; i++)
+          channels[i].checked = isChecked;
+      }
+
+      async function bindChannels(ch) {
+        $("#channelListHead").html(null);
+        $("#channelList").html(null);
+        if (ch) {
+          $("#channelListHead").html(
+            '<hr/><input class="innerCheckBox" type="checkbox" name="Channels" value="AllChannel" checked="" onclick="allChannel(this)"> &nbsp;<b>Channels</b> &nbsp&nbsp <span id="greenTick" class="greenTick" style="" onclick="get_Data();">Apply</span><hr/>'
+          );
+          let ChannelList = "";
+          for (let i = 0; i < ch.length; i++) {
+            ChannelList +=
+              '<div class="divChkbox"><input class="innerCheckBox" type="checkbox" name="Channels" value="' +
+              ch[i] +
+              '" checked="" > &nbsp;' +
+              ch[i] +
+              "</div>";
+          }
+          ChannelList += "";
+          $("#channelList").html(ChannelList);
+        }
+      }
+
+      function openOrcloseDistr(open) {
+        var distDrops = document.getElementById("statedropchecks-list");
+        if (distDrops.style.display == "block") {
+          if (ischangedDST) {
+            get_Data(true);
+            ischangedDST = false;
+          }
+          distDrops.style.display = "none";
+        } else if (open) {
+          distDrops.style.display = "block";
+        }
+      }
+
+      function changeDistTrue() {
+        ischangedDST = true;
+      }
+
+      function groupAndPlot(subGrp, Grp) {
+        if (Grp) {
+          $("#PlotAllCheckBox").html(null);
+          $("#GroupSelect").html(null);
+          /* var SELECTLIST = '<div class="GRPSHEAD">Distributor</div><hr/><select class="mySelect" style="width:100%">';
+                for(let i = 0; i < Grp.length; i++){
+                    if(i == 0)
+                            SELECTLIST += '<option value="'+Grp[i].id+'" selected> '+Grp[i].Distributor+' </option>';
+                    else
+                        SELECTLIST += '<option value="'+Grp[i].id+'"> '+Grp[i].Distributor+' </option>';
+                }
+                SELECTLIST += '</select>';
+                $("#GroupSelect").html(SELECTLIST); */
+          //$("#PlotAllCheckBox").html('<input type="checkbox" value="PLOTALL" id="PLOTALL"/> Plot all outlets<hr/>');
+          var SELECTLIST = `<!--<div class="GRPSHEAD">Distributor</div><hr/>-->
+                <div class="dropchecks">
+                    <!--<input type="text" id="City" placeholder="City" title="City" class="form-control rounded-0"  autocomplete="off"/>-->
+                    <select class="mySelect" style="width:100%" ><option style="display:none;">Select Distributors</option></select>
+                    <div id="statedropchecks-list" class="dropchecks-items" style="display:none;">`;
+          for (let i = 0; i < Grp.length; i++) {
+            if (i == 0)
+              SELECTLIST +=
+                '<div class="mySelect"><input onchange="changeDistTrue()" name="dropcheckItems" type="checkbox" value="' +
+                Grp[i].id +
+                '" checked> ' +
+                Grp[i].Distributor +
+                "</div>";
+            else
+              SELECTLIST +=
+                '<div class="mySelect"><input name="dropcheckItems" onchange="changeDistTrue()" type="checkbox"  value="' +
+                Grp[i].id +
+                '"> ' +
+                Grp[i].Distributor +
+                "</div>";
+          }
+          SELECTLIST += "</div></div>";
+          $("#GroupSelect").html(SELECTLIST);
+        } else $("#PLOTALL").prop("checked", false);
+        $("#SubGroupSelect").html(null);
+        var SELECTLIST =
+          '<div class="GRPSHEAD">Route</div><hr/><select class="mySelect" style="width:100%">';
+        for (let i = 0; i < subGrp.length; i++) {
+          if (i == 0)
+            SELECTLIST +=
+              '<option value="' +
+              subGrp[i] +
+              '" selected> ' +
+              subGrp[i] +
+              " </option>";
+          else
+            SELECTLIST +=
+              '<option value="' + subGrp[i] + '"> ' + subGrp[i] + " </option>";
+        }
+        SELECTLIST += "</select>";
+        $("#SubGroupSelect").html(SELECTLIST);
+        PlotPoints();
+      }
+
+      function PlotPoints(replot) {
+        LOAD.CSV = true;
+        $("#loader").show();
+
+        clearMarkers();
+
+        /* ids = [];
+            Clusters = []; */
+        if (!replot) {
+          //Checked_Clusters = [];
+          Clusters = [];
+          Clusters2 = [];
+          ids = [];
+          groupList = {};
+        }
+        var MinAry = [];
+        if (!replot && !movedFlag) {
+          Checked_Clusters = [];
+          MAXORDER = 0;
+          MINORDER = 0;
+          SELECT_RANGE = 0;
+          if (hasOrdr) {
+            for (var ii = 0; ii < Data.length; ii++) {
+              var ORDER = parseFloat(Data[ii].Id.split(":")[5]);
+              if (ORDER > MAXORDER) MAXORDER = ORDER;
+              if (ORDER > 0) MinAry.push(ORDER);
+              if (MinAry.length > 0) {
+                MinAry.sort((a, b) => a - b);
+                MINORDER = MinAry[0];
+              }
+              SELECT_RANGE = MAXORDER;
+            }
+          }
+          $("#Routecolorindicator").html(null);
+        }
+        //console.log(JSON.stringify(Data));
+        var clustList = [];
+        markerArray = [];
+
+        var markerCount = 0;
+        var firstMarker;
+        var lastMarker;
+        var FitToBound = false;
+        var colrINDEXS = {};
+        var colrINDEXSv = 11;
+
+        for (var i = 0; i < Data.length; i++) {
+          if (!colrINDEXS.hasOwnProperty(Data[i].distName)) {
+            colrINDEXS[Data[i].distName] = colrINDEXSv;
+            colrINDEXSv++;
+          }
+          var temp = Data[i].Id.split(":");
+          var tempInx = parseInt(colrINDEXS[Data[i].distName], 10);
+          //var tempInx = parseInt(Data[i].Cluster, 10);
+          var colorInx = 0;
+          var Type = 0;
+          try {
+            var seqNo = "1"; //temp[3];
+
+            colorInx = tempInx % 25;
+
+            if (!replot || movedFlag) {
+              if (movedFlag) groupList = {};
+
+              movedFlag = false;
+              Checked_Clusters;
+              //ids.push(temp[1]);
+              ids.push(Data[i].distName);
+              //Clusters.push(Data[i].Cluster);
+              Clusters.push(colrINDEXS[Data[i].distName]);
+              //Clusters2.push(Data[i].Cluster);
+              Clusters2.push(colrINDEXS[Data[i].distName]);
+              Clusters.sort((a, b) => a - b);
+              Clusters2.sort((a, b) => a - b);
+
+              ids = ids.filter(onlyUnique);
+              Clusters = Clusters.filter(onlyUnique);
+              var colordiv1 =
+                "<div class=''><input type='button' style='width:50%;color: black;' value='Select All' onClick='selected(true)'></input><input type='button' style='width:50%;color: black;' value='Reset' onClick='selected(false)'></input>";
+              colordiv1 = colordiv1 + "<div>";
+              var grandTotal = 0;
+              var vehTot = 0;
+
+              for (var j = 0; j < ids.length; j++) {
+                var colindex = Clusters[j] % 25;
+                var ival = j + 1;
+
+                var count = 0;
+                var freqVal = 0;
+                for (var w = 0; w < Clusters2.length; ++w) {
+                  if (Clusters2[w] == Clusters[j]) {
+                    count++;
+
+                    if (Data[i].Cluster == Clusters[j]) {
+                      freqVal = parseInt(Data[i].Id.split(":")[3]);
+                    }
+                  }
+                }
+                var freqTotal = 0;
+                if (Object.keys(groupList).length > 0) {
+                  if (Clusters[j] in groupList) {
+                    freqTotal = groupList[Clusters[j]][1] + freqVal;
+                  } else {
+                    freqTotal += freqVal;
+                  }
+                } else {
+                  freqTotal += freqVal;
+                }
+
+                groupList[Clusters[j]] = [ids[j], freqTotal, count];
+
+                var Checked = "checked";
+                if (Checked_Clusters.indexOf(ids[j]) > -1) {
+                  Checked = "";
+                }
+
+                colordiv1 =
+                  colordiv1 +
+                  "<div class='divChkbox' ><input class='innerCheckBox' type='checkbox' name='Clusters' value='" +
+                  Clusters[j] +
+                  "' " +
+                  Checked +
+                  " onClick='checkchange(\"" +
+                  ids[j] +
+                  "\");'> <span style='background-color:#" +
+                  ColourValues[colindex] +
+                  "'> &nbsp&nbsp&nbsp</span>&nbsp" +
+                  ids[j] +
+                  " (" +
+                  count +
+                  ", " +
+                  freqTotal +
+                  ")</div>"; //[" + freqTotal + "]</div>"
+
+                grandTotal += count;
+                vehTot++;
+              }
+              $("#Routecolorindicator").html(null);
+              $("#Routecolorindicator").html(
+                colordiv1 +
+                  "</div>Total SE:" +
+                  vehTot +
+                  " (" +
+                  grandTotal +
+                  ")<br/></div>"
+              );
+            }
+
+            if (Checked_Clusters.indexOf(temp[1]) > -1) {
+              continue;
+            }
+
+            if (hasOrdr) {
+              var ORDER = parseFloat(temp[5]);
+              var RANGE = parseFloat(SELECT_RANGE);
+              if (ORDER > RANGE) continue;
+            }
+
+            if (clustList.indexOf(Data[i].Cluster) == -1) {
+              clustList.push(Data[i].Cluster);
+            }
+
+            var inHtml =
+              '<div class="fa fa-2x fa-map-marker" style="color:' +
+              "#" +
+              ColourValues[colorInx] +
+              ';"></div>';
+
+            var myIcon = L.divIcon({
+              //iconSize: [16, 16], // size of the icon
+              //iconAnchor: [16, 16],
+              className: "mrkr-label",
+              html: inHtml,
+            });
+
+            let marker = new L.marker(
+              [parseFloat(Data[i].lat), parseFloat(Data[i].lng)],
+              {
+                icon: myIcon,
+              }
+            ); //.addTo(mymap);
+
+            var innerData = `${
+              Data[i].distName ? Data[i].distName + "<br/>" : ""
+            }`;
+            innerData += `${temp[1] + "<br/>" + temp[2]}<br/>`;
+            innerData += `${Data[i].custName ? Data[i].custName : Data[i].Id}`;
+            marker.bindPopup(
+              `${innerData}<span style="display:none;">${Data[i].Id}</span>`
+            );
+
+            if (markerCount == 0) firstMarker = marker;
+            lastMarker = marker;
+            markerCount++;
+            //marker.addTo(mymap);
+            markers.addLayer(marker);
+            FitToBound = true;
+            markerArray[marker._leaflet_id] = marker;
+          } catch {
+            console.log("PlotPoints Exception Line: " + i);
+          }
+        }
+
+        if (hasOrdr) {
+          $("#RangeSlide").html(null);
+          var SliderDiv =
+            '<b>Range: </b><input  type="number" value="' +
+            SELECT_RANGE +
+            '" min="' +
+            MINORDER +
+            '" max="' +
+            MAXORDER +
+            '" id="SELECT_RANGE" oninput="$(\'#greenTick\').show()"/>&nbsp<span id="greenTick" class="greenTick" style="display:none;" onclick="confirmRange();">Apply</span>' +
+            '<input id="CustRange" type="range" min="' +
+            MINORDER +
+            '" max="' +
+            MAXORDER +
+            '" value="' +
+            SELECT_RANGE +
+            '" onchange="applyRange(this.value);" oninput="changeRange(this.value)">' +
+            '<div style="display: flex;flex-direction: row;justify-content: space-between;"><div>' +
+            MINORDER +
+            "</div><div>" +
+            MAXORDER +
+            "</div></div>";
+          $("#RangeSlide").html(SliderDiv);
+        }
+
+        mymap.addLayer(markers);
+
+        if (FitToBound) mymap.fitBounds(markers.getBounds().pad(0.1));
+        if (clustList.length > 1) {
+          $(".markerTooltip").hide();
+        } else {
+          $(".markerTooltip").hide();
+          var latlngs = Array();
+          markerArray.forEach(function (item) {
+            latlngs.push(item.getLatLng());
+          });
+
+          $(".leaflet-routing-container-hide").hide();
+        }
+
+        LOAD.CSV = false;
+        if (!LOAD.CSV && !LOAD.KML_WD && !LOAD.KML_DB) $("#loader").hide();
+      }
+
+      function bounceMarker(markerId) {
+        markerArray[markerId].bounce();
+      }
+      function stopBouncingMarker(markerId) {
+        markerArray[markerId].stopBouncing();
+      }
+
+      function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+      }
+
+      function clearMarkers() {
+        mymap.removeLayer(markers);
+        markers = new L.FeatureGroup();
+        markerArray = [];
+
+        $("#RangeSlide").html(null);
+        $(".ticker").remove();
+      }
+
+      function expandOptions() {
+        $("#Routecolorindicator").toggle();
+      }
+
+      function search() {
+        var searchTxt = $("#searchText").val().toLowerCase();
+        if (searchTxt != "") {
+          var chckboxChecked = $("#chk_removeOthers").is(":checked");
+
+          clearMarkers();
+
+          //var Data = GetData();
+
+          var count = 0;
+          var sLat = "";
+          var sLon = "";
+          var myMarker;
+
+          for (var i = 0; i < Data.length; i++) {
+            var temp = Data[i].Id.split(":");
+            var tempInx = parseInt(Data[i].Cluster, 10);
+            var colorInx = 0;
+
+            colorInx = tempInx % 25;
+
+            if (Checked_Clusters.indexOf(temp[1]) > -1) {
+              continue;
+            }
+
+            if (chckboxChecked) {
+              if (Data[i].Id.toLowerCase().indexOf(searchTxt) !== -1) {
+                var myIcon = L.divIcon({
+                  iconSize: [16, 16], // size of the icon
+                  iconAnchor: [16, 16],
+                  html:
+                    '<div class="fa fa-2x fa-map-marker" style="color:' +
+                    "#" +
+                    ColourValues[colorInx] +
+                    ';">',
+                });
+
+                let marker = new L.marker(
+                  [parseFloat(Data[i].lat), parseFloat(Data[i].lng)],
+                  {
+                    icon: myIcon,
+                  }
+                ).addTo(mymap);
+
+                sLat = Data[i].lat;
+                sLon = Data[i].lng;
+                count++;
+
+                marker.bindPopup(Data[i].Id);
+                myMarker = marker;
+
+                markers.addLayer(marker);
+              }
+            } else {
+              var myIcon = L.divIcon({
+                iconSize: [16, 16], // size of the icon
+                iconAnchor: [16, 16],
+                html:
+                  '<div class="fa fa-2x fa-map-marker" style="color:' +
+                  "#" +
+                  ColourValues[colorInx] +
+                  ';">',
+              });
+
+              let marker = new L.marker(
+                [parseFloat(Data[i].lat), parseFloat(Data[i].lng)],
+                {
+                  icon: myIcon,
+                }
+              ).addTo(mymap);
+
+              marker.bindPopup(Data[i].Id);
+              if (Data[i].Id.toLowerCase().indexOf(searchTxt) !== -1) {
+                marker.bounce();
+
+                sLat = Data[i].lat;
+                sLon = Data[i].lng;
+
+                count++;
+                myMarker = marker;
+              }
+
+              markers.addLayer(marker);
+            }
+          }
+          mymap.addLayer(markers);
+
+          if (count == 1) {
+            mymap.flyTo([sLat, sLon], 16);
+            myMarker.openPopup();
+          }
+        }
+      }
+
+      function searchChanged() {
+        var searchTxt = $("#searchText").val().toLowerCase();
+        if (searchTxt == "") {
+          PlotPoints(true);
+        }
+      }
+
+      async function fetchFromFile(file) {
+        return new Promise((resolve, reject) => {
+          let filename = "";
+          if (file.indexOf("/")) {
+            let files = file.split("/");
+            filename = files[files.length - 1];
+          } else {
+            filename = file;
+          }
+          var inputJSON = {
+            data: {
+              operation: "getfiledata",
+              File: {
+                name: filename,
+              },
+            },
+          };
+          _cL.apiCall(
+            {
+              service: "getdata",
+              body: inputJSON,
+            },
+            (err, data) => {
+              if (err) {
+                console.log(err);
+                return resolve(null);
+              } else {
+                if (data.status == "SUCCESS") return resolve(data.data);
+                else return resolve(null);
+              }
+            }
+          );
+        });
+      }
+
+      async function FetchKMLData_Ward(filePath) {
+        LOAD.KML_WD = true;
+        $("#loader").show();
+        if (filePath != null && filePath != "") {
+          try {
+            //filePath = './dummy-Data/Hyderabad_Wards.kml'
+            /* let response = await fetch(filePath,{
+                                        mode: 'no-cors' // 'cors' by default
+                                    });
+                    if(response.ok){
+                        let data = await response.text();
+                        //console.log(data);
+                        ParseKML(data, true);
+                    }
+                    else{
+                        LOAD.KML_WD = false;
+                        CONFIG.kmlUpload = true;
+                        console.warn('KML file failed to load : please use upload method');
+                        //$("#kml_upload").show();
+                    } */
+            let data = await fetchFromFile(filePath);
+            if (data) ParseKML(data, true);
+            else {
+              LOAD.KML_WD = false;
+              CONFIG.kmlUpload = true;
+              console.warn(
+                "KML file failed to load : please use upload method"
+              );
+              //$("#kml_upload").show();
+            }
+          } catch {
+            LOAD.KML_WD = false;
+            CONFIG.kmlUpload = true;
+            console.warn("KML file failed to load : please use upload method");
+            //$("#kml_upload").show();
+          }
+        } else {
+          LOAD.KML_WD = false;
+          CONFIG.kmlUpload = true;
+          console.warn(
+            "KML file missing in configuration : please use upload method"
+          );
+          //$("#kml_upload").show();
+        }
+        if (!LOAD.KML_WD && !LOAD.KML_DB && !LOAD.CSV) $("#loader").hide();
+      }
+      async function FetchKMLData_DB(filePath, dtCount) {
+        LOAD.KML_DB = true;
+        $("#loader").show();
+        //filePath = './dummy-Data/Hyderabad_Distributor Boundary.kml'
+        if (filePath != null && filePath != "") {
+          try {
+            /* let response = await fetch(filePath, {
+                                        mode: 'no-cors' // 'cors' by default
+                                    });
+                    if(response.ok){
+                        let data = await response.text();
+                        //console.log(data);
+                        ParseKML(data, false,dtCount);
+                    }
+                    else{
+                        LOAD.KML_DB = false;
+                        CONFIG.kmlUpload = true;
+                        console.warn('KML file failed to load : please use upload method');
+                        //$("#kml_upload").show();
+                    } */
+            let data = await fetchFromFile(filePath);
+            if (data) ParseKML(data, false);
+            else {
+              LOAD.KML_DB = false;
+              CONFIG.kmlUpload = true;
+              console.warn(
+                "KML file failed to load : please use upload method"
+              );
+              //$("#kml_upload").show();
+            }
+          } catch {
+            LOAD.KML_DB = false;
+            CONFIG.kmlUpload = true;
+            console.warn("KML file failed to load : please use upload method");
+            //$("#kml_upload").show();
+          }
+        } else {
+          LOAD.KML_DB = false;
+          CONFIG.kmlUpload = true;
+          console.warn(
+            "KML file missing in configuration : please use upload method"
+          );
+          //$("#kml_upload").show();
+        }
+        if (!LOAD.KML_WD && !LOAD.KML_DB && !LOAD.CSV) $("#loader").hide();
+      }
+
+      function ParseKML_BKP29012(line) {
+        if (!line) {
+          LOAD.KML = false;
+          return;
+        }
+        clearPolygons();
+        var Kmldata = {};
+        var dup = 1;
+        var polyCount = 1;
+        if (line.indexOf("<Folder") > 0) {
+          while (line.indexOf("<Folder") > 0) {
+            var polyData = [];
+            var heatData = [];
+            var folderStart = line.indexOf("<Folder");
+            var folderEnd = line.indexOf("</Folder>");
+            var data = line.substring(folderStart, folderEnd);
+            var FolderName = data
+              .substring(data.indexOf("<name>"), data.indexOf("</name>"))
+              .replace("<name>", "");
+            var isWard = false;
+            if (FolderName.toLowerCase().indexOf("ward") > 0) isWard = true;
+            while (data.indexOf("<Placemark") > 0) {
+              var index = data.indexOf("<Placemark");
+              var endindex = data.indexOf("</Placemark>");
+              var subdata = data.substring(index, endindex);
+              var tempname;
+              var name = "";
+              name = subdata
+                .substring(
+                  subdata.indexOf("<name>"),
+                  subdata.indexOf("</name>")
+                )
+                .replace("<name>", "");
+              var AdonProp = {};
+              try {
+                if (subdata.indexOf("<ExtendedData>") > 0) {
+                  var ExtendedData = subdata
+                    .substring(
+                      subdata.indexOf("<ExtendedData>"),
+                      subdata.indexOf("</ExtendedData>")
+                    )
+                    .replace("<ExtendedData>", "");
+                  while (ExtendedData.indexOf("<Data") > 0) {
+                    var Data = ExtendedData.substring(
+                      ExtendedData.indexOf("<Data") + 1,
+                      ExtendedData.indexOf("</Data>")
+                    );
+                    var DataName = Data.substring(
+                      Data.indexOf("<Data") + 1,
+                      Data.indexOf(">")
+                    )
+                      .replace("Data", "")
+                      .trim()
+                      .split("=")[1]
+                      .replace('"', "")
+                      .replace('"', "");
+                    var Value = "";
+                    if (Data.indexOf("<value/>") < 0)
+                      Value = Data.substring(
+                        Data.indexOf("<value>"),
+                        Data.indexOf("</value>")
+                      )
+                        .replace("<value>")
+                        .replace("undefined", "")
+                        .replace(" ", "")
+                        .trim();
+                    DataName = DataName.toUpperCase();
+                    AdonProp[DataName] = Value;
+                    ExtendedData = ExtendedData.substring(
+                      ExtendedData.indexOf("</Data>") + 5
+                    );
+                  }
+                } else if (subdata.indexOf("<description>") > 0) {
+                  var Descr = subdata
+                    .substring(
+                      subdata.indexOf("<description>"),
+                      subdata.indexOf("</description>")
+                    )
+                    .replace("<description>", "");
+                  if (Descr.indexOf("<table") > 0) {
+                    if (Descr.indexOf("WARD_NO") > 0) {
+                      Descr = Descr.substring(Descr.indexOf("WARD_NO") + 10);
+                      if (Descr.indexOf("<td>") > 0) {
+                        var Dvalue = Descr.substring(
+                          Descr.indexOf("<td>"),
+                          Descr.indexOf("</td>")
+                        ).replace("<td>");
+                        AdonProp["WARD_NO"] = Dvalue;
+                      }
+                    }
+                  } else if (Descr.indexOf("WARD_NO") > 0) {
+                    Descr = Descr.substring(Descr.indexOf("WARD_NO"));
+                    var Dvalue = Descr.substring(0, Descr.indexOf("<br"))
+                      .trim()
+                      .replace(" ", "")
+                      .replace("WARD_NO", "");
+                    AdonProp["WARD_NO"] = Dvalue;
+                  }
+                }
+                if (AdonProp["WARD_NO"] != null)
+                  AdonProp["WARD_NO"] = AdonProp["WARD_NO"].replace(
+                    "undefined",
+                    ""
+                  );
+              } catch {}
+              while (subdata.indexOf("<coordinates>") > 0) {
+                var polyColor = "5DADE2";
+                var colorIndx = polyCount % 25;
+                if (!isWard) {
+                  polyColor = PolyColours[colorIndx];
+                  polyCount++;
+                }
+                var coordinates = "";
+                coordinates = subdata.substring(
+                  subdata.indexOf("<coordinates>"),
+                  subdata.indexOf("</coordinates>")
+                );
+                coordinates = coordinates.replace("<coordinates>", "").trim();
+                coordinates = coordinates.replace(",0 ", " ").trim();
+                var cordArray = coordinates.split("\n");
+                if (cordArray.length < 2) cordArray = coordinates.split(" ");
+                var inCords = [];
+                if (cordArray.length == 1) {
+                  subdata = subdata.substring(
+                    subdata.indexOf("</coordinates>") + 14
+                  );
+                  continue;
+                }
+                for (var i = 0; i < cordArray.length; i++) {
+                  cordArray[i] = cordArray[i].trim();
+                  var crds = cordArray[i].split(",");
+                  inCords.push([crds[0], crds[1]]);
+                }
+                if (Kmldata.hasOwnProperty(name)) {
+                  tempname = name + "_" + dup;
+                  dup++;
+                } else tempname = name;
+
+                var warddata = {};
+                var AddHeat = false;
+                if (
+                  WardData.hasOwnProperty([AdonProp["WARD_NO"]]) &&
+                  WardData[AdonProp["WARD_NO"]] != null
+                ) {
+                  if (WardData[AdonProp["WARD_NO"]].length == 3)
+                    warddata = {
+                      Order: WardData[AdonProp["WARD_NO"]][0],
+                      Customer: WardData[AdonProp["WARD_NO"]][1],
+                      Population: WardData[AdonProp["WARD_NO"]][2],
+                    };
+                  AddHeat = true;
+                }
+
+                var poly = {
+                  type: "Feature",
+                  properties: {
+                    name: tempname,
+                    color: "#" + polyColor,
+                    warddata: warddata,
+                    AdonProp: AdonProp,
+                  },
+                  geometry: {
+                    type: "Polygon",
+                    coordinates: [inCords],
+                  },
+                };
+                Kmldata[tempname] = tempname;
+                polyData.push(poly);
+                if (AddHeat) heatData.push(poly);
+                subdata = subdata.substring(
+                  subdata.indexOf("</coordinates>") + 14
+                );
+              }
+              data = data.substring(endindex + 5);
+            }
+            line = line.substring(folderEnd + 5);
+            if (polyData.length > 0)
+              drawPolygons({
+                name: FolderName,
+                data: polyData,
+                heat: heatData,
+              });
+          }
+        } else {
+          var data = line;
+          var polyData = [];
+          var heatData = [];
+          var isWard = true;
+          while (data.indexOf("<Placemark") > 0) {
+            var index = data.indexOf("<Placemark");
+            var endindex = data.indexOf("</Placemark>");
+            var subdata = data.substring(index, endindex);
+            var tempname;
+            var name = "";
+            name = subdata
+              .substring(subdata.indexOf("<name>"), subdata.indexOf("</name>"))
+              .replace("<name>", "");
+            var AdonProp = {};
+            try {
+              if (subdata.indexOf("<ExtendedData>") > 0) {
+                var ExtendedData = subdata
+                  .substring(
+                    subdata.indexOf("<ExtendedData>"),
+                    subdata.indexOf("</ExtendedData>")
+                  )
+                  .replace("<ExtendedData>", "");
+                while (ExtendedData.indexOf("<Data") > 0) {
+                  var Data = ExtendedData.substring(
+                    ExtendedData.indexOf("<Data") + 1,
+                    ExtendedData.indexOf("</Data>")
+                  );
+                  var DataName = Data.substring(
+                    Data.indexOf("<Data") + 1,
+                    Data.indexOf(">")
+                  )
+                    .replace("Data", "")
+                    .trim()
+                    .split("=")[1]
+                    .replace('"', "")
+                    .replace('"', "");
+                  var Value = "";
+                  if (Data.indexOf("<value/>") < 0)
+                    Value = Data.substring(
+                      Data.indexOf("<value>"),
+                      Data.indexOf("</value>")
+                    )
+                      .replace("<value>")
+                      .replace("undefined", "")
+                      .replace(" ", "")
+                      .trim();
+                  DataName = DataName.toUpperCase();
+                  AdonProp[DataName] = Value;
+                  ExtendedData = ExtendedData.substring(
+                    ExtendedData.indexOf("</Data>") + 5
+                  );
+                }
+              } else if (subdata.indexOf("<description>") > 0) {
+                var Descr = subdata
+                  .substring(
+                    subdata.indexOf("<description>"),
+                    subdata.indexOf("</description>")
+                  )
+                  .replace("<description>", "");
+                if (Descr.indexOf("<table") > 0) {
+                  if (Descr.indexOf("WARD_NO") > 0) {
+                    Descr = Descr.substring(Descr.indexOf("WARD_NO") + 10);
+                    if (Descr.indexOf("<td>") > 0) {
+                      var Dvalue = Descr.substring(
+                        Descr.indexOf("<td>"),
+                        Descr.indexOf("</td>")
+                      ).replace("<td>");
+                      AdonProp["WARD_NO"] = Dvalue;
+                    }
+                  }
+                } else if (Descr.indexOf("WARD_NO") > 0) {
+                  Descr = Descr.substring(Descr.indexOf("WARD_NO"));
+                  var Dvalue = Descr.substring(0, Descr.indexOf("<br"))
+                    .trim()
+                    .replace(" ", "")
+                    .replace("WARD_NO", "");
+                  AdonProp["WARD_NO"] = Dvalue;
+                }
+              }
+              if (AdonProp["WARD_NO"] != null)
+                AdonProp["WARD_NO"] = AdonProp["WARD_NO"].replace(
+                  "undefined",
+                  ""
+                );
+            } catch {}
+            while (subdata.indexOf("<coordinates>") > 0) {
+              var polyColor = "5DADE2";
+              var colorIndx = polyCount % 25;
+              if (!isWard) {
+                polyColor = PolyColours[colorIndx];
+                polyCount++;
+              }
+              var coordinates = "";
+              coordinates = subdata.substring(
+                subdata.indexOf("<coordinates>"),
+                subdata.indexOf("</coordinates>")
+              );
+              coordinates = coordinates.replace("<coordinates>", "").trim();
+              coordinates = coordinates.replace(",0 ", " ");
+              var cordArray = coordinates.split("\n");
+              if (cordArray.length < 2) cordArray = coordinates.split(" ");
+              var inCords = [];
+              for (var i = 0; i < cordArray.length; i++) {
+                cordArray[i] = cordArray[i].trim();
+                var crds = cordArray[i].split(",");
+                inCords.push([crds[0], crds[1]]);
+              }
+              if (Kmldata.hasOwnProperty(name)) {
+                tempname = name + "_" + dup;
+                dup++;
+              } else tempname = name;
+
+              var warddata = {};
+              var AddHeat = false;
+              if (
+                WardData.hasOwnProperty([AdonProp["WARD_NO"]]) &&
+                WardData[AdonProp["WARD_NO"]] != null
+              ) {
+                if (WardData[AdonProp["WARD_NO"]].length == 3) {
+                  warddata = {
+                    Order: WardData[AdonProp["WARD_NO"]][0],
+                    Customer: WardData[AdonProp["WARD_NO"]][1],
+                    Population: WardData[AdonProp["WARD_NO"]][2],
+                  };
+                  AddHeat = true;
+                }
+              }
+
+              var poly = {
+                type: "Feature",
+                properties: {
+                  name: tempname,
+                  color: "#" + polyColor,
+                  warddata: warddata,
+                  AdonProp: AdonProp,
+                },
+                geometry: {
+                  type: "Polygon",
+                  coordinates: [inCords],
+                },
+              };
+              Kmldata[tempname] = tempname;
+              polyData.push(poly);
+              if (AddHeat) heatData.push(poly);
+              subdata = subdata.substring(
+                subdata.indexOf("</coordinates>") + 14
+              );
+            }
+            data = data.substring(endindex + 5);
+          }
+          drawPolygons({ name: "ward", data: polyData, heat: heatData });
+        }
+        LOAD.KML = false;
+      }
+       function ParseKML(line, isWard, dtCount) {
+        if (!line) {
+          if (!isWard) LOAD.KML_DB = false;
+          else LOAD.KML_WD = false;
+          return;
+        }
+        clearPolygons();
+
+        var Kmldata = {};
+        var dup = 1;
+        var polyCount = 1;
+        var FolderName = "";
+        if (!isWard) FolderName = "Distributor";
+        else FolderName = "ward";
+        var polyData = [];
+        var heatData = [];
+        var data;
+        if (line.indexOf("<Folder") > 0) {
+          var folderStart = line.indexOf("<Folder");
+          var folderEnd = line.indexOf("</Folder>");
+          data = line.substring(folderStart, folderEnd);
+        } else data = line;
+        while (data.indexOf("<Placemark") > 0) {
+          var index = data.indexOf("<Placemark");
+          var endindex = data.indexOf("</Placemark>");
+          var subdata = data.substring(index, endindex);
+          var tempname;
+          var name = "";
+          name = subdata
+            .substring(subdata.indexOf("<name>"), subdata.indexOf("</name>"))
+            .replace("<name>", "");
+          if (name.indexOf("<![CDATA[") != -1) {
+            name = name.replace("<![CDATA[", "");
+            name = name.replace("]]>", "");
+          }
+          var AdonProp = {};
+          var AddHeat = false;
+          if (WardData) if (Object.keys(WardData).length !== 0) AddHeat = true;
+          try {
+            if (subdata.indexOf("<ExtendedData>") > 0) {
+              var ExtendedData = subdata
+                .substring(
+                  subdata.indexOf("<ExtendedData>"),
+                  subdata.indexOf("</ExtendedData>")
+                )
+                .replace("<ExtendedData>", "");
+              while (ExtendedData.indexOf("<Data") > 0) {
+                var Data = ExtendedData.substring(
+                  ExtendedData.indexOf("<Data") + 1,
+                  ExtendedData.indexOf("</Data>")
+                );
+                var DataName = Data.substring(
+                  Data.indexOf("<Data") + 1,
+                  Data.indexOf(">")
+                )
+                  .replace("Data", "")
+                  .trim()
+                  .split("=")[1]
+                  .replace('"', "")
+                  .replace('"', "");
+                var Value = "";
+                if (Data.indexOf("<value/>") < 0)
+                  Value = Data.substring(
+                    Data.indexOf("<value>"),
+                    Data.indexOf("</value>")
+                  )
+                    .replace("<value>")
+                    .replace("undefined", "")
+                    .replace(" ", "")
+                    .trim();
+                DataName = DataName.toUpperCase();
+                AdonProp[DataName] = Value;
+                ExtendedData = ExtendedData.substring(
+                  ExtendedData.indexOf("</Data>") + 5
+                );
+              }
+            } else if (subdata.indexOf("<description>") > 0) {
+              var Descr = subdata
+                .substring(
+                  subdata.indexOf("<description>"),
+                  subdata.indexOf("</description>")
+                )
+                .replace("<description>", "");
+              if (Descr.indexOf("<table") > 0) {
+                if (Descr.indexOf("WARD_NO") > 0) {
+                  Descr = Descr.substring(Descr.indexOf("WARD_NO") + 10);
+                  if (Descr.indexOf("<td>") > 0) {
+                    var Dvalue = Descr.substring(
+                      Descr.indexOf("<td>"),
+                      Descr.indexOf("</td>")
+                    ).replace("<td>");
+                    AdonProp["WARD_NO"] = Dvalue;
+                  }
+                }
+              } else if (Descr.indexOf("WARD_NO") > 0) {
+                Descr = Descr.substring(Descr.indexOf("WARD_NO"));
+                var Dvalue = Descr.substring(0, Descr.indexOf("<br"))
+                  .trim()
+                  .replace(" ", "")
+                  .replace("WARD_NO", "");
+                AdonProp["WARD_NO"] = Dvalue;
+              }
+            }
+            if (AdonProp["WARD_NO"] != null)
+              AdonProp["WARD_NO"] = AdonProp["WARD_NO"].replace(
+                "undefined",
+                ""
+              );
+          } catch {}
+          while (subdata.indexOf("<coordinates>") > 0) {
+            var polyColor = "5DADE2";
+            var brdrColor = "FFFFFF";
+            var colorIndx = polyCount % 25; //dtCount % 25;
+            if (!isWard) {
+              polyColor = PolyColours[colorIndx];
+              brdrColor = PolyColours[colorIndx];
+              polyCount++;
+            }
+            var coordinates = "";
+            coordinates = subdata.substring(
+              subdata.indexOf("<coordinates>"),
+              subdata.indexOf("</coordinates>")
+            );
+            coordinates = coordinates.replace("<coordinates>", "").trim();
+            coordinates = coordinates.replace(",0 ", " ").trim();
+            var cordArray = coordinates.split("\n");
+            if (cordArray.length < 2) cordArray = coordinates.split(" ");
+            var inCords = [];
+            if (cordArray.length == 1) {
+              subdata = subdata.substring(
+                subdata.indexOf("</coordinates>") + 14
+              );
+              continue;
+            }
+            for (var i = 0; i < cordArray.length; i++) {
+              cordArray[i] = cordArray[i].trim();
+              var crds = cordArray[i].split(",");
+              inCords.push([crds[0], crds[1]]);
+            }
+            /* if(Kmldata.hasOwnProperty(name)){
+                        tempname = name + "_" + dup;
+                        dup++;
+                    }
+                    else */
+            tempname = name;
+
+            if (isWard) {
+              if (AdonProp["WARD_NO"])
+                AdonProp["WARD_NO"] = AdonProp["WARD_NO"].replaceAll(" ", "");
+              else {
+                AdonProp["WARD_NO"] = tempname; /* .replaceAll(' ','');
+                            AdonProp['WARD_NO'] = AdonProp['WARD_NO'].toLowerCase().replaceAll('ward',''); */
+              }
+
+              var warddata = {};
+              if (
+                WardData.hasOwnProperty([AdonProp["WARD_NO"]]) &&
+                WardData[AdonProp["WARD_NO"]] != null
+              ) {
+                if (WardData[AdonProp["WARD_NO"]].length == 4)
+                  warddata = {
+                    Order: WardData[AdonProp["WARD_NO"]][0],
+                    Customer: WardData[AdonProp["WARD_NO"]][1],
+                    Population: WardData[AdonProp["WARD_NO"]][2],
+                    dpl: WardData[AdonProp["WARD_NO"]][3],
+                  };
+                AdonProp["Population"] = warddata.Population;
+                AdonProp["Outtlets"] = warddata.Customer;
+                AdonProp["DPL"] = warddata.dpl;
+              }
+            }
+
+            var poly = {
+              type: "Feature",
+              properties: {
+                name: tempname,
+                color: "#" + polyColor,
+                border: "#" + brdrColor,
+                warddata: warddata,
+                AdonProp: AdonProp,
+              },
+              geometry: {
+                type: "Polygon",
+                coordinates: [inCords],
+              },
+            };
+            Kmldata[tempname] = tempname;
+            polyData.push(poly);
+            if (AddHeat) heatData.push(poly);
+            subdata = subdata.substring(subdata.indexOf("</coordinates>") + 14);
+          }
+          data = data.substring(endindex + 5);
+        }
+        line = line.substring(folderEnd + 5);
+        if (polyData.length > 0)
+          drawPolygons(
+            { name: FolderName, data: polyData, heat: heatData },
+            isWard
+          );
+          return polyData;
+      }
+
+      async function drawPolygons(DataArray, isWard) {
+        var innerBox = "";
+        var NameAsId = "POLY" + (PolyLayers.length + 1);
+        function eachLayerFeature(feature, layer) {
+          layer.on({
+            mouseover: function (e) {
+              e.target.setStyle({
+                weight: 3,
+                fillOpacity: 0.6,
+              });
+            },
+            mouseout: function (e) {
+              e.target.setStyle({
+                weight: 2,
+                fillOpacity: 0.5,
+              });
+            },
+          });
+          let content = "<b>Name: </b>" + feature.properties.name;
+          for (var key in feature.properties.AdonProp)
+            content =
+              content +
+              "<br/><b>" +
+              key +
+              ": </b>" +
+              feature.properties.AdonProp[key];
+          layer.bindPopup("<div>" + content + "</div>");
+          var nameId = "POLYSUB" + (PolyInnerLayers.length + 1);
+          if (!isWard) {
+            if (!Poly_subLayers.hasOwnProperty(NameAsId))
+              Poly_subLayers[NameAsId] = [];
+            var otCunt = 0;
+            if (dist_Cust[feature.properties.name])
+              otCunt = dist_Cust[feature.properties.name];
+            innerBox +=
+              '<hr/><div><input type="checkbox"  name="OtherPOLY" id="' +
+              nameId +
+              '" value="' +
+              nameId +
+              '" checked onclick="TogglePolygons(this);"/>&nbsp;<span style="background-color:' +
+              feature.properties.color +
+              '"> &nbsp;&nbsp;&nbsp;</span>&nbsp;' +
+              feature.properties.name +
+              " - " +
+              otCunt +
+              "</div>";
+            Poly_id_Layer[nameId] = layer;
+            Poly_subLayers[NameAsId].push(nameId);
+            PolyInnerLayers.push(nameId);
+            layer.on("click", (e) => {
+              /* if(_editLayer)
+		                    mymap.removeLayer(_editLayer); */
+              if (e.target == _prevLayer || _editMode) return;
+              if (_drawControl) _drawControl.remove();
+              _editLayer = new L.FeatureGroup().addTo(mymap);
+              _editLayer.addLayer(e.target);
+              _drawControl = new L.Control.Draw({
+                draw: false,
+                edit: {
+                  featureGroup: _editLayer,
+                  remove: false,
+                },
+                position: "bottomleft",
+              }).addTo(mymap);
+              _prevLayer = e.target;
+            });
+            
+          } else {
+            if (feature.properties.AdonProp) {
+              if (
+                feature.properties.AdonProp.WARD_NO == "23" ||
+                feature.properties.AdonProp.WARDNO == "23"
+              )
+                console.log("");
+              //var tmpCenter = new L.FeatureLayer();
+              /* var tmpCenter = layer;
+                        tmpCenter.addTo(mymap); */
+              var tmpCenter = centroidFromPoly(layer);
+              if (feature.properties.AdonProp.hasOwnProperty("WARD_NO")) {
+                var inHtml =
+                  '<div " style="color:' +
+                  '#000000;"> <span class="wrd-label">' +
+                  feature.properties.AdonProp.WARD_NO +
+                  "</span> </div>";
+
+                var myIcon = L.divIcon({
+                  iconSize: [16, 16], // size of the icon
+                  iconAnchor: [16, 16],
+                  //className: 'wrd-label',
+                  html: inHtml,
+                });
+
+                let marker = new L.marker(tmpCenter, {
+                  icon: myIcon,
+                }); //.addTo(layer)
+                marker.bindPopup("<div>" + content + "</div>");
+                wrdLabels.addLayer(marker);
+                /* layer.bindTooltip(
+                                feature.properties.AdonProp.WARD_NO,
+                                {
+                                    //permanent:true,
+                                    //direction:'center',
+                                    className: 'PolyLabel'
+                                }
+                            ).openTooltip(tmpCenter); */
+              } else if (feature.properties.AdonProp.hasOwnProperty("WARDNO")) {
+                var inHtml =
+                  '<div " style="color:' +
+                  '#000000;"> <span class="wrd-label">' +
+                  feature.properties.AdonProp.WARDNO +
+                  "</span> </div>";
+
+                var myIcon = L.divIcon({
+                  iconSize: [16, 16], // size of the icon
+                  iconAnchor: [16, 16],
+                  //className: 'wrd-label',
+                  html: inHtml,
+                });
+
+                let marker = new L.marker(tmpCenter, {
+                  icon: myIcon,
+                }); //.addTo(layer)
+                marker.bindPopup("<div>" + content + "</div>");
+                wrdLabels.addLayer(marker);
+                /* layer.bindTooltip(
+                                feature.properties.AdonProp.WARDNO,
+                                {
+                                    permanent:true,
+                                    direction:'center',
+                                    className: 'PolyLabel'
+                                }
+                            ).openTooltip(tmpCenter.getCenter()); */
+              }
+              /* mymap.removeLayer(tmpCenter); */
+            }
+          }
+        }
+
+        var PolyLayer = L.geoJSON(DataArray.data, {
+          style: function (feature) {
+            return {
+              weight: 1,
+              opacity: 1,
+              color: feature.properties.border,
+              fillColor: feature.properties.color,
+              fillOpacity: 0.5,
+            };
+          },
+          onEachFeature: eachLayerFeature,
+        });
+        WholePolygon.addLayer(PolyLayer);
+        mymap.fitBounds(WholePolygon.getBounds());
+        PolyLayer.addTo(mymap);
+
+        if (isWard) {
+          wrdLabels.addTo(mymap);
+          $("#wardSelect").append(
+            '<div><b>WARD</b></div><hr/><div><input id="WardPOLY" type="checkbox" value="' +
+              NameAsId +
+              '" checked onclick="TogglePolygons(this);"/>&nbsp;<span style="background-color:#5DADE2"> &nbsp;&nbsp;&nbsp;</span>&nbsp;' +
+              DataArray.name +
+              "</div>"
+          );
+          Poly_id_Layer[NameAsId] = PolyLayer;
+
+          if (loadHeatMap && isWard) drawHeatMaps(NameAsId, DataArray.heat);
+        } else {
+          $("#distSelect").append(
+            '<div style="margin-top: 10px;"><input type="checkbox" value="' +
+              NameAsId +
+              '" checked onclick="TogglePolygons(this);" name="HeadPoly"/>&nbsp;<b>' +
+              DataArray.name +
+              "</b></div>" +
+              innerBox
+          );
+          //$("#distSelect").append(innerBox);
+          Poly_id_Layer[NameAsId] = PolyLayer;
+          if (_editLayer == null)
+            _editLayer = drawnItems = new L.FeatureGroup().addTo(mymap);
+            if (_drawControl) _drawControl.remove();
+          _drawControl = new L.Control.Draw({
+            draw: true,
+            edit: {
+              featureGroup: _editLayer,
+              remove: false,
+            },
+            position: "bottomleft",
+          }).addTo(mymap);
+          editedLayer = PolyLayer;
+        }
+        PolyLayers.push(PolyLayer);
+
+        if (!isWard) LOAD.KML_DB = false;
+        else LOAD.KML_WD = false;
+
+        setOthersToTop();
+        if (!LOAD.KML_WD && !LOAD.KML_DB && !LOAD.CSV) $("#loader").hide();
+      }
+
+      function drawHeatMaps(NameAsId, data) {
+        var PolyLayer = Poly_id_Layer[NameAsId];
+        function orderHeatStyle(feature) {
+          var COLOR = heatColors(
+            Ward_mx_Data.MaxOrdr,
+            feature.properties.warddata.Order
+          );
+          return {
+            weight: 0.5,
+            opacity: 1,
+            color: "#FFFFFF", //COLOR,
+            fillColor: COLOR,
+            fillOpacity: 0.85,
+            gradient: true,
+          };
+        }
+        function custHeatStyle(feature) {
+          var COLOR = heatColors(
+            Ward_mx_Data.MaxCust,
+            feature.properties.warddata.Customer
+          );
+          return {
+            weight: 0.5,
+            opacity: 1,
+            color: "#FFFFFF", //COLOR,
+            fillColor: COLOR,
+            fillOpacity: 0.85,
+            gradient: true,
+          };
+        }
+        function popHeatStyle(feature) {
+          var COLOR = heatColors(
+            Ward_mx_Data.MaxPop,
+            feature.properties.warddata.Population
+          );
+          return {
+            weight: 0.5,
+            opacity: 1,
+            color: "#FFFFFF", //COLOR,
+            fillColor: COLOR,
+            fillOpacity: 0.85,
+            gradient: true,
+          };
+        }
+        function dplHeatStyle(feature) {
+          //var COLOR = heatColors(Ward_mx_Data.MaxOrdr, feature.properties.warddata.Order)
+          var COLOR = "";
+          /* if(feature.properties.warddata.dpl == 0)
+                    COLOR = '#5DADE2';
+                else */
+          if (feature.properties.warddata.dpl > 250) COLOR = "#00FF00";
+          else if (feature.properties.warddata.dpl >= 150) COLOR = "#FF8C00";
+          else COLOR = "#FF0000";
+          return {
+            weight: 0.5,
+            opacity: 1,
+            color: "#FFFFFF", //COLOR,
+            fillColor: COLOR,
+            fillOpacity: 0.85,
+            gradient: true,
+          };
+        }
+        function eachOrderHeatLayer(feature, layer) {
+          layer.bindPopup("Order: " + feature.properties.warddata.Order);
+        }
+        function eachCustHeatLayer(feature, layer) {
+          layer.bindPopup("Customers: " + feature.properties.warddata.Customer);
+        }
+        function eachPopHeatLayer(feature, layer) {
+          layer.bindPopup(
+            "Population: " + feature.properties.warddata.Population
+          );
+        }
+        function eachdplHeatLayer(feature, layer) {
+          layer.bindPopup("DPL: " + feature.properties.warddata.Population);
+        }
+        function eachALLHeatLayer(feature, layer) {
+          let Name = "";
+          if (
+            feature.properties.name !==
+              feature.properties.AdonProp["WARD_NO"] &&
+            feature.properties.name !== ""
+          )
+            Name = `${feature.properties.name}<br/>`;
+          let popup = `${Name}
+                Ward No: ${
+                  feature.properties.AdonProp["WARD_NO"]
+                    ? feature.properties.AdonProp["WARD_NO"]
+                    : "Unknown ward"
+                }<br/>
+                Population: ${
+                  feature.properties.warddata.Population
+                    ? feature.properties.warddata.Population
+                    : 0
+                }<br/>
+                Outlets: ${
+                  feature.properties.warddata.Customer
+                    ? feature.properties.warddata.Customer
+                    : 0
+                }<br/>
+                DPL: ${
+                  feature.properties.warddata.dpl
+                    ? feature.properties.warddata.dpl
+                    : 0
+                }<br/>`;
+          layer.bindPopup(popup);
+        }
+
+        Heat_id_Layer = {};
+        Heat_id_Layer.NORMAL = PolyLayer;
+
+        var radioBtns =
+          "<b>Ward layering</b><hr/>" +
+          '<input type="radio" id="NormalWise" name="WardLayerFilter" value="NormalWise" checked onclick="heatMapPolygon(\'' +
+          NameAsId +
+          "','NORMAL')\">&nbsp None<br>";
+        if (hasOrdr) {
+          Heat_id_Layer.ORDER = L.geoJSON(data, {
+            style: orderHeatStyle,
+            onEachFeature: eachALLHeatLayer,
+          });
+          radioBtns +=
+            '<input type="radio" id="OrderWise" name="WardLayerFilter" value="OrderWise" onclick="heatMapPolygon(\'' +
+            NameAsId +
+            "','ORDER')\">&nbsp Order<br>";
+        }
+        if (hasWard) {
+          Heat_id_Layer.CUSTOMER = L.geoJSON(data, {
+            style: custHeatStyle,
+            onEachFeature: eachALLHeatLayer,
+          });
+          radioBtns +=
+            '<input type="radio" id="CustWise" name="WardLayerFilter" value="CustWise" onclick="heatMapPolygon(\'' +
+            NameAsId +
+            "','CUSTOMER')\">&nbsp Outlet<br>";
+        }
+        if (hasPop) {
+          Heat_id_Layer.POPULATION = L.geoJSON(data, {
+            style: popHeatStyle,
+            onEachFeature: eachALLHeatLayer,
+          });
+          radioBtns +=
+            '<input type="radio" id="PopuWise" name="WardLayerFilter" value="PopuWise" onclick="heatMapPolygon(\'' +
+            NameAsId +
+            "','POPULATION')\">&nbsp Population<br>";
+        }
+        if (hasdpl) {
+          Heat_id_Layer.DPL = L.geoJSON(data, {
+            style: dplHeatStyle,
+            onEachFeature: eachALLHeatLayer,
+          });
+          radioBtns +=
+            '<input type="radio" id="DPLWise" name="WardLayerFilter" value="DPLWise" onclick="heatMapPolygon(\'' +
+            NameAsId +
+            "','DPL')\">&nbsp DPL<br>";
+        }
+
+        $("#PolyLayers").html(radioBtns);
+      }
+
+      async function get_All_Data(success, fail) {
+        $("#loader").show();
+        if (CONFIG.s3Loc != "") {
+          try {
+            if (CONFIG.s3Loc.indexOf("s3://") >= 0)
+              CONFIG.s3Loc = CONFIG.s3Loc.replace("s3://", "");
+            if (CONFIG.s3Loc.endsWith("/"))
+              CONFIG.s3Loc = CONFIG.s3Loc.substring(0, CONFIG.s3Loc.length - 1);
+            BUCKET_NAME = CONFIG.s3Loc;
+            MASTER_FILE = CONFIG.masterFile;
+            ORDER_FILE = CONFIG.orderFile;
+          } catch {
+            fail();
+            return;
+          }
+          if (BUCKET_NAME == "" || MASTER_FILE == "") {
+            fail();
+            return;
+          }
+          var InputJson = {
+            api: "getData",
+            token: sessionStorage.getItem("token"),
+            user: sessionStorage.getItem("username"),
+            data: {
+              operation: "getAllData",
+            },
+            config: {
+              Bucket: "" + BUCKET_NAME,
+              MasterFile: "" + MASTER_FILE,
+              OrderFile: "" + ORDER_FILE,
+            },
+          };
+          var callAjax = $.ajax({
+            type: "POST",
+            url: "" + networkURL.URL + networkURL.service,
+            data: "" + JSON.stringify(InputJson),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: success,
+            error: fail,
+          });
+        } else fail();
+      }
+      //get_Data();
+      async function get_Data_bkp(getSubs, all) {
+        LOAD.CSV = true;
+        $("#loader").show();
+        var Group_Sel = $("#GroupSelect option:selected").val();
+        var SubGroup_Sel = $("#SubGroupSelect option:selected").val();
+        var channels = document.getElementsByName("Channels");
+        var chnlFltr = "";
+        if (channels) {
+          for (let i = 0; i < channels.length; i++) {
+            if (channels[i].checked == true) {
+              if (chnlFltr != "") chnlFltr += ",";
+              chnlFltr += channels[i].value;
+            }
+          }
+        }
+        var PlotAll = false;
+        if (all) PlotAll = $("#PLOTALL").prop("checked");
+        else $("#PLOTALL").prop("checked", false);
+        var InputJson = {
+          api: "getData",
+          token: sessionStorage.getItem("token"),
+          user: sessionStorage.getItem("username"),
+          data: {
+            operation: "getLocData",
+          },
+          config: {
+            Bucket: "" + BUCKET_NAME,
+            MasterFile: "" + MASTER_FILE,
+            OrderFile: "" + ORDER_FILE,
+          },
+          getAll: false,
+          getSubData: true,
+          conditions: [
+            {
+              field: "GROUP_CD",
+              value: "" + Group_Sel,
+              operation: "EQ",
+              AND: true,
+            },
+          ],
+        };
+        if (!getSubs) {
+          InputJson.getSubData = false;
+          InputJson.conditions.push({
+            field: "SUBGROUP_CD",
+            value: "" + SubGroup_Sel,
+            operation: "EQ",
+            AND: true,
+          });
+          InputJson.conditions.push({
+            field: "CHANNEL",
+            value: "" + chnlFltr,
+            operation: "IN",
+            AND: true,
+          });
+        } else {
+          InputJson.channels = chnlFltr;
+        }
+        if (PlotAll) InputJson.getAll = true;
+        var callAjax = $.ajax({
+          type: "POST",
+          url: "" + networkURL.URL + networkURL.service,
+          data: "" + JSON.stringify(InputJson),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          success: (data) => {
+            if (data.status == "SUCCESS") {
+              Data = data.data.LocData;
+              hasOrdr = data.data.hasOrdr;
+              if (getSubs) groupAndPlot(data.data.SUBGROUPS);
+              else PlotPoints();
+            } else if (data.error == "Unauthorized Token") {
+              sessionStorage.clear();
+              alert("Session Expired login again");
+              window.open("index.html", "_self");
+            } else {
+              console.error(data);
+            }
+          },
+          error: (err) => {
+            LOAD.CSV = false;
+            $("#loader").hide();
+          },
+        });
+      }
+
+      async function get_Data(getSubs, all) {
+        LOAD.CSV = true;
+        $("#loader").show();
+        var Group_Sel = [];
+        var onecheck = false;
+        var dropchecks = document.getElementsByName("dropcheckItems");
+        if (dropchecks) {
+          for (let i = 0; i < dropchecks.length; i++) {
+            if (dropchecks[i].checked == true) {
+              onecheck = true;
+              Group_Sel.push(dropchecks[i].value);
+            }
+          }
+          if (!onecheck) Group_Sel.push("");
+        }
+        /* var grp_sel = $('#GroupSelect option:selected').val();
+            Group_Sel.push(grp_sel); */
+        var SubGroup_Sel = $("#SubGroupSelect option:selected").val();
+        var channels = document.getElementsByName("Channels");
+        var chnlFltr = [];
+        onecheck = false;
+        if (channels) {
+          for (let i = 0; i < channels.length; i++) {
+            if (channels[i].checked == true) {
+              if (channels[i].value !== "AllChannel") {
+                onecheck = true;
+                chnlFltr.push(channels[i].value);
+              }
+            }
+          }
+          if (!onecheck) chnlFltr.push("");
+        }
+        var PlotAll = false;
+        if (all) PlotAll = $("#PLOTALL").prop("checked");
+        else $("#PLOTALL").prop("checked", false);
+        var InputJson = {
+          orgId: parseInt(sessionStorage.getItem("orgId")),
+          user: sessionStorage.getItem("orgId"),
+          user: sessionStorage.getItem("username"),
+          data: {
+            operation: "custdata",
+            orgId: parseInt(atob(sessionStorage.getItem("maporg"))),
+            territoryId: atob(sessionStorage.getItem("maptertry")),
+            distributor: Group_Sel,
+            route: SubGroup_Sel,
+            channel: chnlFltr,
+            getAll: false,
+            getSubData: true,
+          } /* ,
+                config: {
+                    Bucket: "" + BUCKET_NAME,
+                    MasterFile: "" + MASTER_FILE,
+                    OrderFile: "" + ORDER_FILE
+                },
+                conditions:[
+                    {
+                        field: "GROUP_CD",
+                        value: "" + Group_Sel,
+                        operation: "EQ",
+                        AND: true
+                    }
+                ] */,
+        };
+        if (!getSubs) {
+          InputJson.data.getSubData = false;
+        }
+        if (PlotAll) InputJson.data.getAll = true;
+        var callAjax = $.ajax({
+          type: "POST",
+          url: "" + networkURL.URL + "/getdata",
+          headers: { token: sessionStorage.getItem("token") },
+          data: "" + JSON.stringify(InputJson),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          success: (data) => {
+            if (data.status == "SUCCESS") {
+              Data = data.data.LocData;
+              hasOrdr = data.data.hasOrdr;
+              if (getSubs) groupAndPlot(data.data.SUBGROUPS);
+              else PlotPoints();
+            } else if (data.error == "Unauthorized Token") {
+              sessionStorage.clear();
+              alert("Session Expired login again");
+              window.open("index.html", "_self");
+            } else {
+              console.error(data);
+            }
+          },
+          error: (err) => {
+            LOAD.CSV = false;
+            if (err.responseJSON) {
+              if (err.responseJSON.error == "Unauthorized token") {
+                alert(" Login expired \n please login again.");
+                _cL.logout();
+              }
+            }
+            $("#loader").hide();
+          },
+        });
+      }
+
+      function heatColors(MaxData, wData) {
+        var FullLength = MaxData.length;
+        var Fraction = FullLength / 30;
+        var Index = MaxData.indexOf(wData);
+
+        var ColorCode = "#" + Heat_Color_Strip[0];
+        var j = 0;
+        for (var i = 29; i > 0; i--) {
+          if (Index > Fraction * i) {
+            ColorCode = "#" + Heat_Color_Strip[i];
+            break;
+          }
+          j++;
+        }
+        return ColorCode;
+      }
+
+      function heatMapPolygon(LayerName, feature) {
+        //alert('Name: '+LayerName+' , Feature: '+feature);
+        $("#HeatLegend").html(null);
+        if (Prev_HeatLayer != null) mymap.removeLayer(Prev_HeatLayer);
+        if (feature == "NORMAL") {
+          $("#HeatLegend").html(null);
+          legentLoaded = false;
+          return;
+        }
+        $("#WardPOLY").prop("checked", true);
+        var wardPoly = Poly_id_Layer[LayerName];
+        //mymap.removeLayer(wardPoly);
+        //wardPoly.addTo(mymap);
+        if (Heat_id_Layer.hasOwnProperty(feature)) {
+          var htLayer = Heat_id_Layer[feature];
+          htLayer.addTo(mymap);
+          Prev_HeatLayer = Heat_id_Layer[feature];
+        }
+        /* var checks = document.getElementsByName('HeadPoly');
+            for(var i=0; i<checks.length; i++){
+                checks[i].checked = false;
+                var SelectedLayer = Poly_id_Layer[checks[i].value];
+                mymap.removeLayer(SelectedLayer);
+                if(Poly_subLayers.hasOwnProperty(checks[i].value)){
+                    for(var j=0; j<Poly_subLayers[checks[i].value].length; j++){
+                        $('#'+Poly_subLayers[checks[i].value][j]).prop("checked", false);
+                    }
+                }
+            } */
+        setOthersToTop();
+        var sortRange = [];
+        if (feature == "ORDER") sortRange = Ward_mx_Data.MaxOrdr;
+        else if (feature == "CUSTOMER") sortRange = Ward_mx_Data.MaxCust;
+        else if (feature == "POPULATION") sortRange = Ward_mx_Data.MaxPop;
+
+        if (feature !== "DPL") {
+          var legend = "<span>" + sortRange[0] + "&nbsp</span>";
+          for (var j = 0; j < Heat_Color_Strip.length; j++) {
+            legend +=
+              '<span style="background-color: #' +
+              Heat_Color_Strip[j] +
+              '">&nbsp</span>';
+          }
+          $("#HeatLegend").html(
+            legend +
+              "<span>&nbsp" +
+              sortRange[sortRange.length - 1] +
+              "</span><hr/>"
+          );
+          legentLoaded = true;
+        } else {
+          /* var legend = `<span>0 &nbsp</span>
+                <span style="background-color: #FF0000">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>
+                <span style="background-color: #FF8C00">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>
+                <span style="background-color: #00FF00">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>
+                <span>&nbsp 250+</span><hr/>`;
+                $('#HeatLegend').html(legend);
+                legentLoaded = true; */
+          color = ["FF0000", "FF8C00", "00FF00"];
+
+          var legend = "";
+          for (var j = 0; j < 3; j++) {
+            legend +=
+              '<span style="background-color: #' +
+              color[j] +
+              '">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>';
+          }
+
+          var legendValue =
+            "<span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp" +
+            0 +
+            "</span>";
+
+          legendValue +=
+            "<span >&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>";
+          legendValue += "<span>&nbsp&nbsp&nbsp&nbsp&nbsp" + 150 + "</span>";
+          legendValue +=
+            "<span >&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>";
+          legendValue += "<span>&nbsp&nbsp" + 250 + "</span>";
+          legendValue += "<span >&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>";
+          legendValue =
+            legendValue +
+            "<span>&nbsp&nbsp>" +
+            250 +
+            "&nbsp&nbsp&nbsp</span><hr/>";
+          $("#HeatLegend").html(legend + "<br/>" + legendValue);
+          legentLoaded = true;
+        }
+      }
+
+      function clearPolygons() {
+        for (var i = 0; i < PolyLayers.length; i++) {
+          mymap.removeLayer(PolyLayers[i]);
+        }
+        if (Prev_HeatLayer != null) mymap.removeLayer(Prev_HeatLayer);
+        PolyLayers = [];
+        Poly_id_Layer = {};
+        Poly_subLayers = {};
+        WholePolygon = new L.FeatureGroup();
+        mymap.removeLayer(wrdLabels);
+        wrdLabels = new L.FeatureGroup();
+        //$("#PolySelect").html('');
+        $("#wardSelect").html("");
+        $("#distSelect").html("");
+        $("#PolyLayers").html("");
+        $("#HeatLegend").html(null);
+        legentLoaded = false;
+      }
+
+      function TogglePolygons(checkbox) {
+        if (!Poly_id_Layer.hasOwnProperty(checkbox.value)) return;
+        if (checkbox.id == "WardPOLY") {
+          $("#NormalWise").prop("checked", true);
+          if (Prev_HeatLayer != null) mymap.removeLayer(Prev_HeatLayer);
+          if (checkbox.checked) wrdLabels.addTo(mymap);
+          else mymap.removeLayer(wrdLabels);
+        }
+        var isChecked = true;
+        var SelectedLayer = Poly_id_Layer[checkbox.value];
+        if (checkbox.checked) {
+          SelectedLayer.addTo(mymap);
+          isChecked = true;
+        } else {
+          mymap.removeLayer(SelectedLayer);
+          isChecked = false;
+        }
+        if (Poly_subLayers.hasOwnProperty(checkbox.value)) {
+          for (var i = 0; i < Poly_subLayers[checkbox.value].length; i++) {
+            $("#" + Poly_subLayers[checkbox.value][i]).prop(
+              "checked",
+              isChecked
+            );
+          }
+        }
+        setOthersToTop();
+      }
+
+      function setOthersToTop(AdjustWidth) {
+        var checks = document.getElementsByName("OtherPOLY");
+        for (var i = 0; i < checks.length; i++) {
+          if (checks[i].checked) {
+            var SelectedLayer = Poly_id_Layer[checks[i].value];
+            mymap.removeLayer(SelectedLayer);
+            SelectedLayer.addTo(mymap);
+          }
+        }
+      }
+
+      function applyRange(value) {
+        SELECT_RANGE = value;
+        $("#SELECT_RANGE").val(SELECT_RANGE);
+        PlotPoints(true);
+      }
+
+      function confirmRange() {
+        var range = $("#SELECT_RANGE")[0];
+        var value = range.value;
+        if (value == "") value = 0;
+        value = parseFloat(value);
+        var min = parseFloat(range.min);
+        var max = parseFloat(range.max);
+        if (value > max) value = max;
+        if (value < min) value = min;
+        SELECT_RANGE = value;
+        PlotPoints(true);
+      }
+
+      function changeRange(value) {
+        $("#SELECT_RANGE").val(value);
+      }
+
+      function ajax_POST(url, req) {
+        return new Promise(function (resolve, reject) {
+          var callAjax = $.ajax({
+            type: "POST",
+            url: "" + url,
+            data: "" + JSON.stringify(req),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+              resolve(data);
+            },
+            error: function (err) {
+              resolve(err);
+            },
+          });
+        });
+      }
+
+      function uploadLayer() {
+        $("#loader").show();
+        var filename = `${sessionStorage.getItem(
+          "sitename"
+        )}_Distributor-boundary.kml`;
+        var req = {
+          data: {
+            operation: "kmlupdate",
+            orgId: atob(sessionStorage.getItem("maporg")),
+            territoryId: atob(sessionStorage.getItem("maptertry")),
+            filename: filename,
+            kmlData: _editedBOUNDARY,
+          },
+        };
+        _cL.apiCall(
+          {
+            service: "adminops",
+            body: req,
+          },
+          (err, data) => {
+            if (err) {
+              /* if(err.responseJSON){
+                        if(err.responseJSON.error == 'Unauthorized token'){
+                            alert(" Login expired \n please login again.")
+                            _cL.logout();
+                        }
+                    }
+                    alert('kml updation failed'); */
+              $("#loader").hide();
+              return;
+            }
+            if (data.status == "SUCCESS") {
+              var dyn_elem = document.getElementById("uploadLyrBtn");
+              if (dyn_elem)
+                document.getElementById("MapLoad").removeChild(dyn_elem);
+            } else console.warn("kml updation failed"), console.warn(data);
+            $("#loader").hide();
+          }
+        );
+      }
+      function avgCodsFromArray(latlngs, sumAvg) {
+        var centroid = { lat: 0, lng: 0 };
+        if (latlngs.length !== 0) {
+          let sumLat = 0,
+            sumLong = 0,
+            avgLat = 0,
+            avgLong = 0,
+            len = 0;
+          centroid = compute2DPolygonCentroid(latlngs, centroid);
+          if (sumAvg) {
+            latlngs.map((ltlg) => {
+              sumLat += ltlg.lat;
+              sumLong += ltlg.lng;
+            });
+            len += latlngs.length;
+          }
+          avgLat = sumLat / len;
+          avgLong = sumLong / len;
+          if (sumAvg)
+            centroid = {
+              lat: avgLat,
+              lng: avgLong,
+            };
+        }
+        return centroid;
+      }
+      function compute2DPolygonCentroid(vertices, centroid) {
+        if (!centroid) centroid = { lat: 0, lng: 0 };
+        var signedArea = 0.0;
+        var x0 = 0.0; // Current vertex X
+        var y0 = 0.0; // Current vertex Y
+        var x1 = 0.0; // Next vertex X
+        var y1 = 0.0; // Next vertex Y
+        var a = 0.0; // Partial signed area
+
+        // For all vertices except last
+        var i = 0;
+        for (i = 0; i < vertices.length - 1; ++i) {
+          x0 = vertices[i].lat;
+          y0 = vertices[i].lng;
+          x1 = vertices[i + 1].lat;
+          y1 = vertices[i + 1].lng;
+          a = x0 * y1 - x1 * y0;
+          signedArea += a;
+          centroid.lat += (x0 + x1) * a;
+          centroid.lng += (y0 + y1) * a;
+        }
+
+        // Do last vertex separately to avoid performing an expensive
+        // modulus operation in each iteration.
+        x0 = vertices[vertices.length - 1].lat;
+        y0 = vertices[vertices.length - 1].lng;
+        x1 = vertices[0].lat;
+        y1 = vertices[0].lng;
+        a = x0 * y1 - x1 * y0;
+        signedArea += a;
+        centroid.lat += (x0 + x1) * a;
+        centroid.lng += (y0 + y1) * a;
+
+        signedArea *= 0.5;
+        centroid.lat /= 6.0 * signedArea;
+        centroid.lng /= 6.0 * signedArea;
+
+        return centroid;
+      }
+      function centroidFromPoly(poly) {
+        var latlngs = poly.getLatLngs();
+        var centroid = { lat: 0, lng: 0 };
+        if (latlngs.length !== 0) {
+          /* let sumLat = 0, sumLong = 0, avgLat = 0, avgLong = 0, len = 0; */
+          latlngs.map((latlng) => {
+            let qrtr = parseInt(latlng.length * 0.25),
+              half = parseInt(latlng.length * 0.5),
+              qrtr3rd = parseInt(latlng.length * 0.75),
+              full = latlng.length - 1;
+            /* let center1 = compute2DPolygonCentroid( [latlng[0], latlng[half]] );
+                    let center2 = compute2DPolygonCentroid( [latlng[qrtr], latlng[qrtr3rd]] ); */
+            let dfltCenter = compute2DPolygonCentroid(latlng);
+            if (isMarkerInsidePolygon(dfltCenter.lat, dfltCenter.lng, poly)) {
+              centroid = dfltCenter;
+              return;
+            }
+            centroid = avgCodsFromArray([latlng[0], latlng[half]], true);
+            if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly)) return;
+            centroid = avgCodsFromArray([latlng[qrtr], latlng[qrtr3rd]], true);
+            if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly)) return;
+            centroid = avgCodsFromArray([latlng[0], latlng[qrtr3rd]], true);
+            if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly)) return;
+            centroid = avgCodsFromArray([latlng[qrtr], latlng[full]], true);
+            if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly)) return;
+            centroid = avgCodsFromArray([latlng[half], latlng[full]], true);
+            if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly)) return;
+            centroid = avgCodsFromArray([latlng[0], latlng[qrtr]], true);
+            if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly)) return;
+            centroid = avgCodsFromArray([latlng[qrtr3rd], latlng[full]], true);
+            if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly)) return;
+            else {
+              let qrtr2 = parseInt(qrtr / 2),
+                half2 = parseInt(half / 2),
+                qrtr3rd2 = parseInt(qrtr3rd / 2),
+                full2 = parseInt(full / 2);
+              centroid = avgCodsFromArray([latlng[0], latlng[qrtr2]], true);
+              if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly))
+                return;
+              centroid = avgCodsFromArray([latlng[qrtr2], latlng[qrtr]], true);
+              if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly))
+                return;
+              centroid = avgCodsFromArray([latlng[qrtr], latlng[half2]], true);
+              if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly))
+                return;
+              centroid = avgCodsFromArray([latlng[half2], latlng[half]], true);
+              if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly))
+                return;
+              centroid = avgCodsFromArray(
+                [latlng[half], latlng[qrtr3rd2]],
+                true
+              );
+              if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly))
+                return;
+              centroid = avgCodsFromArray(
+                [latlng[qrtr3rd2], latlng[qrtr3rd]],
+                true
+              );
+              if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly))
+                return;
+              centroid = avgCodsFromArray(
+                [latlng[qrtr3rd], latlng[full2]],
+                true
+              );
+              if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly))
+                return;
+              centroid = avgCodsFromArray([latlng[full2], latlng[full]], true);
+              if (isMarkerInsidePolygon(centroid.lat, centroid.lng, poly))
+                return;
+              else centroid = dfltCenter;
+            }
+            /* latlng.map(ltlg=>{
+                        sumLat += ltlg.lat;
+                        sumLong += ltlg.lng;
+                    })
+                    len += latlng.length; */
+          });
+          /* avgLat = sumLat / len;
+                avgLong = sumLong / len;
+                return {
+                    lat:avgLat,
+                    lng:avgLong
+                } */
+        }
+        return centroid;
+      }
+      function isMarkerInsidePolygon(x, y, poly) {
+        var polyPoints = poly.getLatLngs();
+        //var x = marker.getLatLng().lat, y = marker.getLatLng().lng;
+
+        var inside = false;
+        for (
+          var i = 0, j = polyPoints[0].length - 1;
+          i < polyPoints[0].length;
+          j = i++
+        ) {
+          var xi = polyPoints[0][i].lat,
+            yi = polyPoints[0][i].lng;
+          var xj = polyPoints[0][j].lat,
+            yj = polyPoints[0][j].lng;
+
+          var intersect =
+            yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+          if (intersect) inside = !inside;
+        }
+
+        return inside;
+      }
+    </script>
+  </head>
+  <body>
+    <div style="display: flex; flex-direction: row">
+      <div
+        style="
+          flex: 1.5;
+          min-width: 250px;
+          padding: 10px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          height: 100vh;
+          z-index: 980;
+        "
+      >
+        <div>
+          <!-- class="dropdownFilter" -->
+          <div class="Map_Logo">
+            <img src="./images/logo_new.jpg" alt="" style="width: 150px" />
+          </div>
+          <div
+            id="siteDetail"
+            style="text-align: center; font-weight: bold"
+          ></div>
+          <div id="PlotAllCheckBox" onchange="get_Data(false, true)"></div>
+          <div
+            class="input-group"
+            id="GroupSelect"
+            style="margin-bottom: 5px; width: 100%"
+          ></div>
+          <div
+            class="input-group"
+            onchange="get_Data()"
+            id="SubGroupSelect"
+            style="width: 100%"
+          ></div>
+          <div style="display: none">
+            <div onchange="PlotPoints()" id="RouteSelect">
+              <input
+                type="radio"
+                name="gender"
+                class="RouteOption"
+                value="Sales"
+                checked
+              />
+            </div>
+          </div>
+          <div
+            id="HeatLegend"
+            style="margin-top: 5px; text-align: center"
+          ></div>
+          <div id="PolyLayers" style="padding: 0 10px; margin-top: 5px"></div>
+          <div id="wardSelect"></div>
+        </div>
+        <div
+          style="
+            background-color: #fff;
+            flex: 1;
+            overflow: auto;
+            margin-top: 6px;
+          "
+        >
+          <!-- class="branchButton"  -->
+          <div id="distSelect"></div>
+
+          <!-- <div id="PolySelect" style="padding: 10px; max-height: 250px; overflow-y: auto;">
+                    <div id="distSelect"></div>
+                </div> -->
+        </div>
+        <div style="text-align: center">
+          <input
+            type="button"
+            value="Home"
+            class="button-link"
+            onclick="_cL.login()"
+            style="padding: 0.5em 1em; margin: 0.5em 1em; width: 70%"
+          />
+        </div>
+      </div>
+      <div
+        style="padding: 3px; height: 100vh; width: 100%; flex: 7"
+        id="MapLoad"
+      ></div>
+    </div>
+
+    <div class="sideOpt" style="display: flex; flex-direction: column">
+      <div style="flex: 1; overflow-y: auto; max-height: 300px">
+        <table style="border-collapse: collapse">
+          <tr>
+            <td
+              colspan="2"
+              style="
+                text-align: center;
+                background-color: #007988;
+                color: white;
+                padding: 2px;
+                cursor: pointer;
+                width: 100%;
+                width: 217px;
+              "
+              onclick="expandOptions();"
+            >
+              Options
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 1px; background-color: #007988"></td>
+            <td>
+              <div id="Routecolorindicator"></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <hr />
+      <div id="RangeSlide" style="border-bottom: 1px solid black"></div>
+      <div
+        id="channelListHead"
+        style="padding: 0px 10px; overflow-y: auto; height: 25px"
+      ></div>
+      <div id="channelList" style="padding: 0px 10px; overflow-y: auto"></div>
+    </div>
+
+    <div class="searchBox">
+      <input
+        type="text"
+        placeholder="SEARCH"
+        id="searchText"
+        onfocus="this.select();"
+        oninput="searchChanged();"
+      />
+      <span onclick="search();">⚲</span>
+      <input
+        type="checkbox"
+        id="chk_removeOthers"
+        title="Remove all other markers"
+      />
+    </div>
+
+    <div class="footer-basic">
+      <footer>
+        <p class="copyright">
+          Powered By
+          <a
+            href="https://www.dhisigma.com"
+            style="text-decoration: none; color: #ff6000; font-size: 17px"
+            >DhiSigma</a
+          >
+        </p>
+      </footer>
+    </div>
+
+    <!-- Loader -->
+    <div class="load-Comp" id="loader">
+      <div class="layer"></div>
+      <div class="load-Div">
+        <div class="custom-spinner"></div>
+        <div style="position: fixed; top: 50%; left: calc(50% - 25px)">
+          Loading
+        </div>
+      </div>
+    </div>
+
+    <div id="BranchList" style="display: none">
+      <div class="layer onTop"></div>
+      <div class="col-sm-6 col-sm-offset-3 onTop">
+        <div class="subDiv">
+          <div class="Heading">
+            <div>Branches</div>
+            <div>
+              <input
+                type="button"
+                value="X"
+                class="buttonClose-link"
+                onclick="$('#BranchList').hide();"
+              />
+            </div>
+          </div>
+          <hr />
+          <div id="BRANCHES" style="text-align: center"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

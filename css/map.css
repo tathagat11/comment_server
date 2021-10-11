@@ -1,0 +1,663 @@
+.leaflet-marker-icon {
+    background: none;
+    border: none;
+}
+
+.leaflet-touch-icon {
+    background-color: white !important;
+    border: 1px solid black !important;
+    width: 10px !important;
+    height: 10px !important;
+}
+
+.polyMarker {
+    padding: 2px;
+    /* border: 1px dotted; */
+    margin: 3px;
+    background-color: rgba(0,0,0,0.4);
+    font-size: 13px;
+    color: yellow;
+    font-family: consolas;
+    font-weight: bold;
+}
+
+    .polyMarker:hover {
+        background-color: rgba(0,0,0,.8);
+    }
+
+.sideOpt {
+    border: 2px solid #007988;
+    width: 217px;
+    /* height: 140px; */
+    font-size: 10px;
+    position: fixed;
+    z-index: 1000;
+    background-color: white;
+    right: 12px;
+    top: 10px;
+    color: black;
+    max-height: 85%;
+    overflow-y: auto;
+    /* color: white; */
+    /* font-family: ABeeZee; */
+    /* background-color: #32373a; */
+    /* position: absolute; */
+    /* box-shadow: 10px 9px 4px grey; */
+    /* font-size: 10px; */
+}
+
+.polygonMarkerList {
+    position: fixed;
+    /* border: 1px solid; */
+    bottom: 55px;
+    width: 300px;
+    right: 10px;
+    height: 200px;
+    z-index: 1010;
+    /* background-color: #fff; */
+    /* background-color: rgba(255,255,255,0.5); */
+    overflow-y: auto;
+}
+
+    .polygonMarkerList table tr td {
+        padding: 2px;
+    }
+
+.polyMarkerSlNo {
+    font-size: 20px;
+    border-right: 1px solid;
+}
+
+.dropdownFilter {
+    display: block;
+    z-index: 1000;
+    position: fixed;
+    left: 50px;
+    top: 13px;
+    background-color: white;
+    padding: 1px 5px;
+    min-width: 250px;
+}
+
+.Map_Logo{
+    flex-direction: row;
+    justify-content: center;
+    padding: 5px 5px;
+    /* margin-bottom: 5px; */
+    align-self: center;
+    display: flex;
+}
+
+.mySelect {
+    background-color: #007988;
+    color: white;
+    border: 1px dotted #4BAAB9;
+}
+
+.mapType {
+    position: fixed;
+    bottom: 8px;
+    left: 94px;
+    z-index: 1000;
+    color: blue;
+    font-size: 12px;
+    font-family: consolas;
+    background-color: white;
+    padding: 2px;
+}
+
+    .mapType span {
+        margin: 1px;
+        cursor: pointer;
+    }
+
+.searchBox {
+    position: fixed;
+    z-index: 1000;
+    right: 34px;
+    bottom: 28px;
+    background-color: rgba(255,255,255,.5);
+}
+
+    .searchBox input[type="text"] {
+        border: 0px;
+        border-bottom: 2px solid #f15d2f;
+        background-color: transparent;
+        color: red;
+        font-family: consolas;
+        float: left;
+    }
+
+    .searchBox span {
+        font-size: 17px;
+        font-weight: bolder;
+        color: #f15d2f;
+        margin-left: -16px;
+        cursor: pointer;
+        float: left;
+    }
+
+.leaflet-control-zoom-in, .leaflet-control-zoom-out {
+    border: 1px dotted !important;
+    color: #007988 !important;
+    background-color: white !important;
+    margin: 2px !important;
+}
+
+.leaflet-control-zoom {
+    border: none !important;
+}
+
+.left {
+    width: 3px;
+    background-color: red;
+}
+
+.head {
+    font-weight: bold;
+    background-color: #5592ad;
+}
+
+.label {
+    color: orange;
+    width: 50px;
+}
+
+.address {
+    margin-left: 3px;
+    border-left: 1px dotted orange;
+    padding-left: 2px;
+    font-style: italic;
+}
+
+.closeMe, .options {
+    background-color: Red;
+    color: white;
+    text-align: center;
+    padding: 3px;
+}
+
+.options {
+    float: left;
+}
+
+.optionBox {
+    position: absolute;
+    background-color: red;
+}
+
+.divChkbox {
+    padding: 3px;
+    border-bottom: 1px dashed;
+    font-weight: bold;
+}
+
+    .divChkbox:hover {
+        background-color: sienna;
+        font-weight: bold;
+    }
+
+.markerTooltip {
+    height: 16px;
+    width: 31px;
+    border: 1px solid #B3B3B3;
+    background-color: #007988;
+    margin-top: -40px;
+    margin-left: -8px;
+    text-align: center;
+    color: white;
+}
+
+.ticker {
+    position: fixed;
+    text-align: center;
+    top: 10px;
+    background-color: #f9b29c;
+    color: #8F280C;
+    padding: 5px;
+    z-index: 1000;
+    width: 400px;
+    font-size: 12px;
+    left: calc(50% - 200px);
+    border: 1px solid;
+}
+
+.mapFile {
+    position: fixed;
+    bottom: 8px;
+    left: 166px;
+    z-index: 1000;
+    color: blue;
+    font-size: 12px;
+    font-family: consolas;
+    background-color: white;
+    padding: 2px;
+}
+
+.IndexBox{
+    float:left;
+    margin:2px;
+    width: 15%;
+}
+
+#CustomInput{
+    position: fixed;
+    bottom: -200px;
+    left: 100px;
+    z-index: 1000;
+    background-color: white;
+    font-size: 12px;
+    font-family: consolas;
+    width: 550px;
+    text-align: center;
+    padding: 8px;
+    border-radius: 25px;
+    transition-duration:1s;
+}
+
+#DownloadBtns{
+    position: fixed;
+    right: 225px;
+    bottom: 10px;
+    z-index: 1000;
+}
+
+#CustomOutput{
+    position: fixed;
+    bottom: -300px;
+    right: 200px;
+    z-index: 1000;
+    background-color: white;
+    font-size: 12px;
+    font-family: consolas;
+    width: 400px;
+    padding: 18px;
+    border-radius: 25px;
+    transition-duration:1s;
+}
+
+#CustomOutput td{
+    padding: 5px 8px;
+    border: 1px solid;
+}
+
+#CustomOutput table{
+    margin-bottom: 10px;
+}
+
+a.boxclose{
+    float:right;
+    margin-top:-35px;
+    margin-right:0;
+    cursor:pointer;
+    color: #fff;
+    border: 1px solid #AEAEAE;
+    border-radius: 30px;
+    background: #605F61;
+    font-size: 31px;
+    font-weight: bold;
+    display: inline-block;
+    line-height: 0px;
+    padding: 11px 3px;       
+}
+
+.boxclose:before {
+    content: "×";
+}
+
+#grpSwitch {
+    position: fixed;
+    bottom: 0;
+    right: 142px;
+    z-index: 1000;
+    border-radius: 9px;
+    height: 20px;
+    width: 100px;
+}
+
+#grpSwitch-button {
+    width: 100%;
+    background-image: none;
+    background-color: #007988;
+    color: white;
+    border: none;
+    height: 100%;
+    font-size: 10px;
+}
+
+#RestInd {
+    float: right;
+    margin-top: 23px;
+    margin-right: 0;
+    cursor: pointer;
+    color: #fff;
+    border: 1px solid #AEAEAE;
+    border-radius: 30px;
+    background: #605F61;
+    display: inline-block;
+    line-height: 0px;
+    padding: 11px 3px;
+}
+
+#ClustContext {
+    position: fixed;
+    height: 93px;
+    width: 135px;
+    z-index: 10010;
+    background-color: white;
+    border-radius: 5px;
+    padding: 3px;
+    text-align: center;
+    font-size: 10px;
+    box-shadow: 0px 0px 5px #888888;
+}
+
+#ClustContext input {
+    border: 1px solid blue;
+}
+
+#ClustContext hr {
+    margin: 0px;
+}
+
+#ClustContext div {
+    cursor: pointer;
+    padding: 4px;
+}
+
+#ClustContext div:hover {
+    background-color: darkgrey;
+    font-weight: bold;
+}
+
+#clustrenameBtn {
+    background-image: none;
+    background-color: white;
+    color: #333;
+    border: none;
+    width: 100%;
+    padding: 4px;
+}
+
+#clustrenameBtn:hover {
+    background-color: darkgrey;
+    font-weight: bold;
+}
+
+#clustrenameBtn.disabled {
+    background-color: white;
+}
+
+#clustrenameBtn.disabled:hover {
+    background-color: white;
+    font-weight: bold;
+}
+.load-Comp {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+}
+
+.load-Div {
+    width: 100px;
+    height: 100px;
+    position: fixed;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
+    text-align: center;
+    padding: 8px;
+    background-color: white;
+    border-radius: 50%;
+    z-index: 1001;
+}
+.custom-spinner{
+    display: inline-block;
+    width: 85px;
+    height: 85px;
+    vertical-align: text-bottom;
+    border: 10px solid #73489C ;
+    border-right-color: transparent;
+    border-radius: 50%;
+    -webkit-animation: spin .75s linear infinite;
+    animation: spin .75s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.subDiv{
+    background: #FFF;
+    border-radius: 0;
+    border: 1px solid #d1d1d1;
+    margin-top: 8vh;
+    min-height: 100px;
+}
+.Heading{
+    font-size: 24px;
+    text-align: center;
+    font-weight: 300;
+    color: #807d6e;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 10px;
+}
+hr{
+    margin: 0;
+}
+.button-link:hover {
+    background: #73489C;
+    border: 1px solid #73489C;
+    color: #fff;
+    border-radius: 5px;
+    transition: .5s;
+    cursor: pointer;
+    padding: 1em 1.5em;
+    margin: 1em .5em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.button-link {
+    border: 1px solid #73489C;
+    color: #73489C;
+    background: transparent;
+    border-radius: 5px;
+    transition: .5s;
+    cursor: pointer;
+    padding: 1em 1.5em;
+    margin: 1em .5em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+.buttonClose-link:hover {
+    background: #f15d2f;
+    border: 1px solid #f15d2f;
+    color: #fff;
+    border-radius: 5px;
+    transition: .5s;
+    cursor: pointer;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.buttonClose-link {
+    border: 1px solid #f15d2f;
+    color: #f15d2f;
+    background: transparent;
+    border-radius: 5px;
+    transition: .5s;
+    cursor: pointer;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+.CustBtn-link{
+    border: 1px solid #f15d2f;
+    color: #f15d2f;
+    background: #FFF;
+    border-radius: 5px;
+    transition: .5s;
+    cursor: pointer;
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 5px 7px;
+}
+.CustBtn-link:hover {
+    background: #f15d2f;
+    border: 1px solid #f15d2f;
+    color: #fff;
+    border-radius: 5px;
+    transition: .5s;
+    cursor: pointer;
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 5px 7px;
+}
+.MainDiv{
+    display: flex;
+    flex-direction: column;
+    background-image: url('./images/landingBG1.JPG');
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+.layer{
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    opacity: 0.5;
+    position: absolute;
+}
+.onTop{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+.branchButton{
+    position: fixed;
+    left: 12px;
+    bottom: 12px;
+    z-index: 999;
+    border-radius: 10px;
+}
+.PolyLabel{
+    background: rgba(255, 255, 255, 0);
+    border:0;
+    border-radius:0px;
+    box-shadow: 0 0px 0px;
+    text-shadow: 0px 0px 5px #fff;
+}
+#RangeSlide{
+    padding: 5px;
+}
+.greenTick{
+    padding: 3px;
+    background-color: #50ee42;
+    border-radius: 25%;
+    cursor: pointer;
+}
+.greenTick:hover{
+    background-color: #22c414;
+}
+.footer-basic {
+    font-family: serif;
+    padding:20px 0;
+    background-color: transparent;
+    color:#4b4c4d;
+    bottom: 0;
+    position: fixed;  
+    width: 100%;
+    z-index: 975;
+}
+.footer-basic .copyright {
+    margin-top:15px;
+    text-align:center;
+    font-size:15px;
+    color:#096666;
+    margin-bottom:0;
+}
+.mrkr-label {
+    font-family: 'IM Fell DW Pica', serif;
+    color: #fec623;
+    font-size: 50%;
+    line-height: 10px;
+    cursor: inherit;
+}
+.dropchecks {
+    width: 100%;
+    position: relative;
+    display: inline-block;
+}
+.dropchecks-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    right: 0;
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+.dropchecks-items div {
+    padding: 10px;
+    cursor: pointer;
+    /* background-color: #fff; */
+    border-bottom: 1px solid #d4d4d4;
+}
+
+/* .dropchecks-items div:hover {
+    background-color: #e9e9e9;
+} */
+
+.leaflet-top, .leaflet-left{
+    display: flex!important;
+    flex-direction: row!important;
+}
+.leaflet-control-zoom, .leaflet-bar .leaflet-control{
+    display: flex;
+    flex-direction: row;
+}
+.leaflet-bottom{
+    bottom: 50px!important;
+}
+.upload-layer{
+    z-index: 1000;
+    bottom: 0px;
+    position: fixed;
+    margin-left: 5px;
+    width: 100px;
+    height: 40px;
+    background: white;
+}
+.leaflet-tooltip-pane .text {
+    color: white;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    font-size: 1em;
+}
+.topRight-Bottons-Custom{
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    font-size: 12px;
+}

@@ -1,0 +1,61 @@
+@charset "utf-8";
+/* CSS Document */
+
+.login-box.well { background:#FFF; border-radius:0; border:1px solid #d1d1d1; margin-top:8vh;}
+.login-box legend {  font-size:24px;text-align:left; font-weight:300; color:#807d6e;}
+.login-box label { font-size:13px; font-weight:300; }
+.login-box input { box-shadow:none; border-color:#DDD; border-radius:0;}
+
+ 
+.login-box .form-control:focus{ box-shadow:none; border-color:#00b09c;}
+
+.logoImg{
+	height:auto;
+	padding:2px 0px 25px 25px;
+	margin:auto;
+	text-align:center;
+}
+
+
+/*Loged in*/
+.login-box  .btn-default {
+    color: #333;
+    background-color: #f9f9f9;
+    border: 1px solid;
+    text-align: center;
+    cursor: pointer;
+    color: #FFFFFF;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fca35f), color-stop(100%, #f23f11)), #f23f11;
+    background: -moz-linear-gradient(#fca35f, #f23f11), #f23f11;
+    background: -webkit-linear-gradient(#fca35f, #f23f11), #f23f11;
+    background: linear-gradient(#fca35f, #f23f11), #f23f11;
+    border-color: #f75831 #fd5b33 #e83206;
+    -moz-box-shadow: rgba(0, 0, 0, 0.06) 0 1px 0, rgba(255, 255, 255, 0.1) 0 1px 0 0 inset;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.06) 0 1px 0, rgba(255, 255, 255, 0.1) 0 1px 0 0 inset;
+    box-shadow: rgba(0, 0, 0, 0.06) 0 1px 0, rgba(255, 255, 255, 0.1) 0 1px 0 0 inset;
+}
+.HelpDesk{
+	text-align:center;
+}
+.HelpDesk ul{
+	list-style:none;
+}
+.HelpDesk ul li{
+	width:100%;
+	height:auto;
+	display:block;
+}
+.HelpDesk ul li h4{
+	text-align:center;
+	font-size:14px;
+	font-weight:bold;
+	color:#f55d28;
+}
+.HelpDesk ul li p{
+	text-align:center;
+	font-size:12px;
+	color:#333333;
+}

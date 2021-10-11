@@ -4,7 +4,8 @@ const app = express();
 const PORT = 3000;
 app.use(express.static(__dirname));
 app.use(express.json());
- 
+app.set('view engine', 'html');
+
 var db = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
@@ -19,7 +20,8 @@ db.connect((err) => {
     else console.log('MySQL Connected');
 });
 
+app.get('',(req,res) => {
+    res.sendFile(__dirname+"/Map.html");
+});
 
-
-
-app.listen(process.env.PORT || 3000);
+app.listen(PORT);
