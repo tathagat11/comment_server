@@ -45,6 +45,57 @@
     <script src="./Scripts/customLibrary.js"></script>
     <script src="./networkURL.json"></script>
     <style>
+      .collapsiblediv {
+        border: 0;
+        position: absolute;
+        top: 150px;
+        right: 20px;
+        width: 300px;
+        
+      }
+
+      .collapsible {
+        position: relative;
+        left: 150px;
+        background-color: #007988;
+        color: white;
+        cursor: pointer;
+        padding: 10px;
+        width: 44%;
+        border-radius: 5px;
+        transition: 0.5s;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+      }
+
+      .active, .collapsible:hover {
+        background-color: #013941;
+        border-radius: 5px;
+        transition: 0.5s;
+      }
+
+      .collapsible:after {
+        content: '\002B';
+        color: white;
+        font-weight: bold;
+        float: right;
+        margin-left: 5px;
+      }
+
+      .active:after {
+        content: "\2212";
+      }
+
+      .content {
+        padding: 0 18px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+        background-color: #f1f1f1;
+      }
+
       .leaflet-marker-icon {
         background: none;
         border: none;
@@ -967,19 +1018,30 @@
             "outlets"
           )} Outlets (within) <hr/>`
         );
-        //if (sessionStorage.getItem("token") != "" && sessionStorage.getItem("token") != null && sessionStorage.getItem("username") != "" && sessionStorage.getItem("username") != null) {
+        
         $("#loader").hide();
         $("#csv_upload").hide();
         $("#kml_upload").hide();
         $("#BranchList").hide();
         InitiateMap("light");
-        //fetch_n_load();
-        //showBranches();
+        
         kmlContentGlobal=await readStaticKML("./kmlFILE.kml");
-        /* }
-            else{
-                window.open("index.html", "_self");
-            } */
+        
+        //collapsible
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.maxHeight){
+              content.style.maxHeight = null;
+            } else {
+              content.style.maxHeight = content.scrollHeight + "px";
+            } 
+          });
+        }
 
         document.onclick = function (e) {
           var innerParent = document.getElementById("statedropchecks-list");
@@ -999,6 +1061,7 @@
           contentType: 'application/json',
           success: function(response){
             console.log(response);
+
           }
         })
       }
@@ -1319,9 +1382,9 @@
 
       function InitiateMap(choice) {
         mymap = L.map("MapLoad",{
-    contextmenu: true,
-    contextmenuWidth: 140,
-    contextmenuItems: [{
+        contextmenu: true,
+        contextmenuWidth: 140,
+        contextmenuItems: [{
         text: 'Show coordinates',
         callback: showCoordinates
     }, {
@@ -3810,11 +3873,17 @@ function addNewPoly(oldPoly,newPoly) {
         >
           <!-- class="branchButton"  -->
           <div id="distSelect"></div>
-
+          </div>
           <!-- <div id="PolySelect" style="padding: 10px; max-height: 250px; overflow-y: auto;">
                     <div id="distSelect"></div>
                 </div> -->
-        </div>
+                <div class = 'collapsiblediv'>
+                  <button class="collapsible">Comments</button>
+                  <div class="content">
+                    <p>Lorem ipsum </p>
+                  </div>
+                </div>
+        <!-- 
         <div style="text-align: center">
           <input
             type="button"
@@ -3822,7 +3891,7 @@ function addNewPoly(oldPoly,newPoly) {
             class="button-link"
             onclick="getcomments()"
             style="padding: 0.5em 1em; margin: 0.5em 1em;position: absolute;right: 20px;top: 300px;"
-          /></div>
+          /></div> --> 
         <div style="text-align: center">
           <input
             type="button"
@@ -3833,10 +3902,12 @@ function addNewPoly(oldPoly,newPoly) {
           />
         </div>
       </div>
+      
       <div
         style="padding: 3px; height: 100vh; width: 100%; flex: 7"
         id="MapLoad"
       ></div>
+      
     </div>
     
     
@@ -3874,7 +3945,9 @@ function addNewPoly(oldPoly,newPoly) {
       <div
         id="channelListHead"
         style="padding: 0px 10px; overflow-y: auto; height: 25px"
-      ></div>
+      >
+      <input type="text" id='commentEntry' onkeydown="sendComment(this)">
+    
       <div id="channelList" style="padding: 0px 10px; overflow-y: auto"></div>
     </div>
     
@@ -3893,6 +3966,7 @@ function addNewPoly(oldPoly,newPoly) {
         id="chk_removeOthers"
         title="Remove all other markers"
       />
+      
     </div>
 
     <div class="footer-basic">
