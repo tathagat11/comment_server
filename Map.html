@@ -50,21 +50,19 @@
         position: absolute;
         top: 150px;
         right: 20px;
-        width: 300px;
-        
+        width: 250px;
       }
 
       .collapsible {
         position: relative;
-        left: 150px;
+        right: -200px;;
         background-color: #007988;
         color: white;
         cursor: pointer;
         padding: 10px;
-        width: 44%;
         border-radius: 5px;
         transition: 0.5s;
-        border: none;
+        border: 1px;
         text-align: left;
         outline: none;
         font-size: 15px;
@@ -77,16 +75,16 @@
       }
 
       .collapsible:after {
-        content: '\002B';
+        /* content: '\002B'; */
         color: white;
         font-weight: bold;
         float: right;
         margin-left: 5px;
       }
 
-      .active:after {
-        content: "\2212";
-      }
+      /*  .active:after {
+        
+      } */
 
       .content {
         padding: 0 18px;
@@ -1007,6 +1005,7 @@
       var markerArray = new Array();
       var Prev_HeatLayer;
       var editedLayer;
+      var sessionComments = [];
 
       window.onload = async function () {
         //await _vD.validate(sessionStorage.getItem('username'),sessionStorage.getItem('Type'),sessionStorage.getItem('token'));
@@ -1026,6 +1025,9 @@
         InitiateMap("light");
         
         kmlContentGlobal=await readStaticKML("./kmlFILE.kml");
+
+        sessionComments = getComments();
+        console.log(sessionComments);
         
         //collapsible
         var coll = document.getElementsByClassName("collapsible");
@@ -1055,15 +1057,21 @@
           }
         };
       };
-      function getcomments(){
+      
+      function getComments(){   //gets all comments for session (self and common comments)
+        var comments=[];
         $.ajax({
           url: '/getcomments',
           contentType: 'application/json',
-          success: function(response){
-            console.log(response);
-
+          success:function(response){
+            for(var i =0; i<response.length;i++)
+            {
+              comments.push(response[i]);
+            }
           }
         })
+        console.log(comments[3]);
+        return comments;
       }
 
       function showBranches() {
@@ -3874,24 +3882,15 @@ function addNewPoly(oldPoly,newPoly) {
           <!-- class="branchButton"  -->
           <div id="distSelect"></div>
           </div>
-          <!-- <div id="PolySelect" style="padding: 10px; max-height: 250px; overflow-y: auto;">
-                    <div id="distSelect"></div>
-                </div> -->
                 <div class = 'collapsiblediv'>
-                  <button class="collapsible">Comments</button>
+                  <button class="collapsible">
+                    <ion-icon name="chatbox">
+                    </ion-icon>
+                  </button>
                   <div class="content">
-                    <p>Lorem ipsum </p>
+                    <p>test comment </p>
                   </div>
                 </div>
-        <!-- 
-        <div style="text-align: center">
-          <input
-            type="button"
-            value="Comments"
-            class="button-link"
-            onclick="getcomments()"
-            style="padding: 0.5em 1em; margin: 0.5em 1em;position: absolute;right: 20px;top: 300px;"
-          /></div> --> 
         <div style="text-align: center">
           <input
             type="button"
@@ -3946,7 +3945,6 @@ function addNewPoly(oldPoly,newPoly) {
         id="channelListHead"
         style="padding: 0px 10px; overflow-y: auto; height: 25px"
       >
-      <input type="text" id='commentEntry' onkeydown="sendComment(this)">
     
       <div id="channelList" style="padding: 0px 10px; overflow-y: auto"></div>
     </div>
@@ -4013,5 +4011,7 @@ function addNewPoly(oldPoly,newPoly) {
         </div>
       </div>
     </div>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   </body>
 </html>
