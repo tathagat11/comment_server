@@ -25,12 +25,19 @@ app.get('',(req,res) => {
 });
 
 app.route("/getcomments")
-.get(function(req,res){
-    let sql2 = `SELECT * FROM comments LIMIT 0,50`;
+.post(function(req,res){
+    let sql2 = `SELECT * FROM comments WHERE commentor='${req.body.sessionUser}' OR self_common='common'`;
     let query = db.query(sql2, (err, results) => {
         if(err) throw err;
         res.send(results);
     });
+});
+
+app.route("/rescomments")
+.post(function(req,res){
+    console.log(req.body.id);
+    let sql = `UPDATE comments SET resolved = 0 WHERE id = ${req.body.id}`
+    res.send('put method called');
 });
 
 app.route("/postcomments")

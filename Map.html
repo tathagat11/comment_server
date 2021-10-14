@@ -88,12 +88,17 @@
 
       .content {
         padding: 0 18px;
-        max-height: 0;
-        overflow: hidden;
+        max-height: 0px;
+        overflow-x:auto;
+        overflow-y: auto; 
+        text-align:left;
         transition: max-height 0.2s ease-out;
         background-color: #f1f1f1;
       }
-
+      /* .ptag {
+        display: block;
+      } */
+ 
       .leaflet-marker-icon {
         background: none;
         border: none;
@@ -1006,6 +1011,7 @@
       var Prev_HeatLayer;
       var editedLayer;
       var sessionComments = [];
+      var sessionUser = 'Tathagat';
 
       window.onload = async function () {
         //await _vD.validate(sessionStorage.getItem('username'),sessionStorage.getItem('Type'),sessionStorage.getItem('token'));
@@ -1026,8 +1032,8 @@
         
         kmlContentGlobal=await readStaticKML("./kmlFILE.kml");
 
-        sessionComments = getComments();
-        console.log(sessionComments);
+        getComments();
+        
         
         //collapsible
         var coll = document.getElementsByClassName("collapsible");
@@ -1040,7 +1046,7 @@
             if (content.style.maxHeight){
               content.style.maxHeight = null;
             } else {
-              content.style.maxHeight = content.scrollHeight + "px";
+              content.style.maxHeight = "200" + "px";
             } 
           });
         }
@@ -1057,22 +1063,64 @@
           }
         };
       };
+
+      function resolveComment(id){
+        $.ajax({
+          url: '/rescomments',
+          contentType: 'application/json',
+          method: 'POST',
+          data: JSON.stringify({id: id}),
+          success: function(data) {
+            console.log('resolve comments sent')
+          },
+          complete: function(){
+            sessionComments=[];
+            getComments();
+          }
+        })
+      }
       
-      function getComments(){   //gets all comments for session (self and common comments)
-        var comments=[];
+      function  getComments(){   //gets all comments for session (self and common comments)
+        var comments = [];
+        
         $.ajax({
           url: '/getcomments',
           contentType: 'application/json',
+          method: "POST",
+          data: JSON.stringify({
+            sessionUser: sessionUser
+          }),
           success:function(response){
-            for(var i =0; i<response.length;i++)
+            for(var i =0; i< response.length;i++)
             {
-              comments.push(response[i]);
+              sessionComments.push(response[i]);
+            } 
+          },
+          complete: function(){
+            document.getElementById('commentsDiv').innerHTML = `<div id="selfComments"></div>
+                    <div id="publicComments"></div>`;
+            /* document.getElementById('publicComments').innerHTML=''; */
+            var pubComments = $("#publicComments");
+            pubComments.append(`<b>Public Comments:</b>`);
+            var selfComments = $("#selfComments");
+            selfComments.append(`<b>Your Comments:</b>`);
+            for(var i = 0; i < sessionComments.length;i++){
+              if(sessionComments[i].self_common == 'common'&&sessionComments[i].commentor!=sessionUser){
+                pubComments.append(`<p class ="ptag">
+                  ${sessionComments[i].commentor}: ${sessionComments[i].comment_}
+                    <button onclick = "resolveComment(${sessionComments[i].id})">done</button>
+                  </p>`)
+              }
+              else if(sessionComments[i].commentor == sessionUser){
+                selfComments.append(`<p class ="ptag"> You: ${sessionComments[i].comment_}
+                    <button onclick = "resolveComment(${sessionComments[i].id})">done</button>
+                  </p>`)
+              }
             }
           }
         })
-        console.log(comments[3]);
-        return comments;
       }
+      
 
       function showBranches() {
         Read_Branches(); // Config from local json
@@ -1391,7 +1439,7 @@
       function InitiateMap(choice) {
         mymap = L.map("MapLoad",{
         contextmenu: true,
-        contextmenuWidth: 140,
+        contextmenuWidth: 180,
         contextmenuItems: [{
         text: 'Show coordinates',
         callback: showCoordinates
@@ -1406,6 +1454,14 @@
         text: 'Zoom out',
         icon: 'images/zoom-out.png',
         callback: zoomOut
+    },'-',{
+        text: 'Add comment',
+        icon: 'images/addcomment.png',
+        callback: enterComment
+    },{
+        text: 'Add public comment',
+        icon: 'images/pubcomment.jpg',
+        callback: enterPubComment
     }]
     }).setView(
           [22.760103170031, 80.8497196441866],
@@ -1426,6 +1482,20 @@
         function zoomOut (e) {
             mymap.zoomOut();
         }
+
+        function enterComment(userComment){
+          userComment=prompt("Enter Comment");
+        }
+        
+        function enterPubComment(userComment){
+          testPrivs=confirm("This comment will be visible to everyone. Do you want to continue ?");
+          if(testPrivs)
+          {
+          userComment=prompt("Enter Comment");
+          }
+          console.log(userComment);
+        }
+
 
         var satellite = L.tileLayer(
             "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -3887,8 +3957,8 @@ function addNewPoly(oldPoly,newPoly) {
                     <ion-icon name="chatbox">
                     </ion-icon>
                   </button>
-                  <div class="content">
-                    <p>test comment </p>
+                  <div id = commentsDiv class="content">
+                    
                   </div>
                 </div>
         <div style="text-align: center">
