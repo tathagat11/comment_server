@@ -1109,7 +1109,7 @@
                 pubComments.append(`<p class ="ptag">
                   ${sessionComments[i].commentor}: ${sessionComments[i].comment_}
                     <button onclick = "resolveComment(${sessionComments[i].id})">done</button>
-                  </p>`)
+                  </p><span style="background-color:#E0E000"></span>`)
               }
               else if(sessionComments[i].commentor == sessionUser){
                 selfComments.append(`<p class ="ptag"> You: ${sessionComments[i].comment_}
@@ -1485,7 +1485,45 @@
 
         function enterComment(userComment){
           userComment=prompt("Enter Comment");
-        }
+          sessionComments = [];
+          $.ajax({
+          url: '/postcomments',
+          contentType: 'application/json',
+          method: 'POST',
+          data: JSON.stringify({commentor: sessionUser,
+                                self_common: 'self',
+                                comment_: userComment,
+                                ToC: 'none'}),
+          success: function(response) {
+            for(var i =0; i< response.length;i++)
+            {
+              sessionComments.push(response[i]);
+            } 
+          },
+          complete: function(){
+            document.getElementById('commentsDiv').innerHTML = `<div id="selfComments"></div>
+                    <div id="publicComments"></div>`;
+            /* document.getElementById('publicComments').innerHTML=''; */
+            var pubComments = $("#publicComments");
+            pubComments.append(`<b>Public Comments:</b>`);
+            var selfComments = $("#selfComments");
+            selfComments.append(`<b>Your Comments:</b>`);
+            for(var i = 0; i < sessionComments.length;i++){
+              if(sessionComments[i].self_common == 'common'&&sessionComments[i].commentor!=sessionUser){
+                pubComments.append(`<p class ="ptag">
+                  ${sessionComments[i].commentor}: ${sessionComments[i].comment_}
+                    <button onclick = "resolveComment(${sessionComments[i].id})">done</button>
+                  </p><span style="background-color:#E0E000"></span>`)
+              }
+              else if(sessionComments[i].commentor == sessionUser){
+                selfComments.append(`<p class ="ptag"> You: ${sessionComments[i].comment_}
+                    <button onclick = "resolveComment(${sessionComments[i].id})">done</button>
+                  </p>`)
+              }
+            }
+          }
+        })
+      }
         
         function enterPubComment(userComment){
           testPrivs=confirm("This comment will be visible to everyone. Do you want to continue ?");
@@ -1494,6 +1532,7 @@
           userComment=prompt("Enter Comment");
           }
           console.log(userComment);
+
         }
 
 
