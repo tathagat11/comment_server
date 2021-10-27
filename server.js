@@ -50,8 +50,9 @@ app.route("/postcomments")
     let query = db.query(sql,(err,results) => {
         if(err) throw err;
         else {
+            console.log(req.body);
             id = results[0].count+1;
-            let sql2 = `INSERT INTO comments VALUES (${id},'${req.body.commentor}','${req.body.self_common}','${req.body.comment_}','${req.body.ToC}',${0});`;
+            let sql2 = `INSERT INTO comments VALUES (${id},'${req.body.commentor}','${req.body.self_common}','${req.body.comment_}','${req.body.ToC}',${0},'${req.body.name}');`;
             let query2 = db.query(sql2,(err,results)=>{
                 if(err) throw err;
                 else {
