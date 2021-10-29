@@ -1064,7 +1064,7 @@
         };
       };
 
-      function enterComment(checkpriv,toc_='none',name=null){
+      function enterComment(checkpriv,latt,longg,currentZoom,toc_='none',name=null){
           if(checkpriv=='common')
             {
               confirm('This comment will be visible to everyone. Do you want to continue ?');
@@ -1076,7 +1076,11 @@
                                 self_common: checkpriv,
                                 comment_: userComment,
                                 ToC: toc_,
-                                name: name});
+                                name: name,
+                                latt: latt,
+                                longg: longg,
+                                currentZoom: currentZoom
+                              });
           $.ajax({
           url: '/postcomments',
           contentType: 'application/json',
@@ -1513,13 +1517,19 @@
         icon: 'images/zoom-out.png',
         callback: zoomOut
     },'-',{
-        text: 'Add comment',
+        text: 'Add private comment',
         icon: 'images/addcomment.png',
-        callback: function(){enterComment('self')}
+        callback: function(e){
+          var currentZoom = mymap.getZoom();
+          enterComment('self',e.latlng['lat'],e.latlng['lng'],currentZoom);
+        }
     },{
         text: 'Add public comment',
         icon: 'images/pubcomment.jpg',
-        callback: function(){enterComment('common')}
+        callback: function(e){
+          var currentZoom = mymap.getZoom();
+          enterComment('common',e.latlng,currentZoom);
+        }
     }]
     }).setView(
           [22.760103170031, 80.8497196441866],
@@ -1666,13 +1676,14 @@
             text: 'Add comment to marker',
             icon: 'images/addcomment.png',
             index: 2,
-            callback: function(){
+            callback: function(e){
+                                  var currentZoom = mymap.getZoom();
                                   var geojsonmarker = marker1.toGeoJSON()
-                                  enterComment('self','marker','marker1');
+                                  enterComment('common',e.latlng,currentZoom,'marker','marker1');
                                 }
           }
         ]
-        });
+        }).addTo(mymap);
 
         var polygon1 = L.polygon([
           [28.424014, 77.082825],
@@ -1693,13 +1704,15 @@
             text: 'Add comment to polygon',
             icon: 'images/addcomment.png',
             index: 2,
-            callback: function(){
+            callback: function(e){
+                                  var currentZoom = mymap.getZoom();
                                   var geojsonpoly = polygon1.toGeoJSON()
-                                  enterComment('self','polygon','polygon1');
+                                  enterComment('common',e.latlng,currentZoom,'polygon','polygon1');
                                 }
           }
         ]
-        });
+        }).addTo(mymap);
+        
         layers['polygon1']=polygon1;
         layers['marker1']=marker1;
       } 
