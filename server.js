@@ -17,7 +17,6 @@ db.connect((err) => {
     if(err){
         throw err;
     }
-    else console.log('MySQL Connected');
 });
 
 app.get('',(req,res) => {
@@ -38,7 +37,6 @@ app.route("/rescomments")
     let sql = `UPDATE comments SET resolved = 1 WHERE id = ${req.body.id}`
     let query = db.query(sql,(err,results) => {
         if(err) throw err;
-        else console.log('db updated!');
     });
     res.send('put method called');
 });
@@ -50,7 +48,6 @@ app.route("/postcomments")
     let query = db.query(sql,(err,results) => {
         if(err) throw err;
         else {
-            console.log(req.body);
             id = results[0].count+1;
             let sql2 = `INSERT INTO comments VALUES (${id},'${req.body.commentor}','${req.body.self_common}','${req.body.comment_}','${req.body.ToC}',${0},'${req.body.name}','${req.body.latt}','${req.body.longg}','${req.body.currentZoom}');`;
             let query2 = db.query(sql2,(err,results)=>{

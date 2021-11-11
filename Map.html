@@ -45,34 +45,26 @@
     <script src="./Scripts/customLibrary.js"></script>
     <script src="./networkURL.json"></script>
     <style>
-      .open-button {
-        background-color: #555;
-        color: white;
-        padding: 16px 20px;
-        border: none;
-        cursor: pointer;
-        opacity: 0.8;
-        position: fixed;
-        bottom: 23px;
-        right: 28px;
-        width: 280px;
-      }
+      /* for the entering of comments */
 
       /* The popup form - hidden by default */
       .form-popup {
         display: none;
         position: fixed;
-        bottom: 0;
+        bottom: 100px;
         right: 15px;
-        border: 3px solid #f1f1f1;
-        z-index: 9000;
+        
+        border-radius: 4%;
+        border: 1px solid darkgray;
+        z-index: 9;
       }
 
       /* Add styles to the form container */
       .form-container {
-        max-width: 300px;
+        max-width: 350px;
         padding: 10px;
         background-color: white;
+        border-radius: 4%;
       }
 
       /* Full-width input fields */
@@ -92,24 +84,69 @@
 
       /* Set a style for the submit/login button */
       .form-container .btn {
-        background-color: #04AA6D;
+        background-color: #007988;
         color: white;
-        padding: 16px 20px;
+        padding: 4px 0;
         border: none;
         cursor: pointer;
-        width: 100%;
+        width: 48%;
         margin-bottom:10px;
         opacity: 0.8;
       }
 
       /* Add a red background color to the cancel button */
-      .form-container .cancel {
-        background-color: red;
-      }
+      
 
       /* Add some hover effects to buttons */
-      .form-container .btn:hover, .open-button:hover {
-        opacity: 1;
+      .form-container .btn:hover {
+        background-color: #013941;
+      }
+
+      .form-container .cancel {
+        background-color: darkgray;
+      }
+      .form-container .cancel:hover {
+        background-color: grey;
+      }
+
+      #commentsDiv hr{
+        margin-bottom: 4px;
+        height:2px;
+        border-width:0;
+        color:gray;
+        background-color:gray
+      }
+
+      #commentsDiv .checkBox{
+        background-color: white;  
+        border: 1px solid #007988;
+        border-radius: 40%;
+        color: #007988;
+      }
+      #commentsDiv .checkBox:hover{
+        background-color: #013941;
+        transition: 0.5s;
+        color: white;
+      }
+      #commentsDiv .checkBox:active{
+        transform: translateY(2px);
+      }
+
+      
+      #publicComments{
+        margin-top: 5px;
+        overflow-y: auto;
+        overflow-x:auto;
+        max-height: 120px;
+        padding-bottom: 10px;
+      }
+
+      #selfComments{
+        margin-top: 8px;
+        overflow-y: auto;
+        overflow-x:auto;
+        max-height: 120px;
+        padding-bottom: 10px;
       }
 
       .collapsiblediv {
@@ -121,7 +158,6 @@
       }
 
       .collapsible {
-        
         position: relative;
         right: -200px;;
         background-color: #007988;
@@ -157,15 +193,34 @@
       .content {
         padding: 0 18px;
         max-height: 0px;
-        overflow-x:auto;
-        overflow-y: auto; 
+        overflow-x:hidden; 
+        overflow-y: hidden;
         text-align:left;
         transition: max-height 0.2s ease-out;
-        background-color: #f1f1f1;
+        background-color: #f0f0f0;
+        border-radius: 5px;
       }
-      /* .ptag {
-        display: block;
-      } */
+
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+
+      /* Track */
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1; 
+      }
+      
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: #888; 
+      }
+
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555; 
+      }
+      
  
       .leaflet-marker-icon {
         background: none;
@@ -1079,7 +1134,7 @@
       var Prev_HeatLayer;
       var editedLayer;
       var sessionComments = [];
-      var sessionUser = 'Tathagat';
+      var sessionUser = 'Madhav';
 
       window.onload = async function () {
         //await _vD.validate(sessionStorage.getItem('username'),sessionStorage.getItem('Type'),sessionStorage.getItem('token'));
@@ -1114,7 +1169,7 @@
             if (content.style.maxHeight){
               content.style.maxHeight = null;
             } else {
-              content.style.maxHeight = "200" + "px";
+              content.style.maxHeight = "300" + "px";
             } 
           });
         }
@@ -1132,20 +1187,26 @@
         };
       };
 
-      function openForm() {
+
+      function openForm(checkpriv,latt,longg,currentZoom,toc_='none',name=null) {
+        if(checkpriv==='common'){
+          document.getElementById('commentLabel').innerHTML='Enter Public Comment';
+        }
+        else document.getElementById('commentLabel').innerHTML='Enter Private Comment';
         document.getElementById("myForm").style.display = "block";
+        document.getElementById("submitbutton").onclick = () =>{
+          var userComment = document.getElementById("commentEntry").value;
+          enterComment(userComment,checkpriv,latt,longg,currentZoom,toc_,name);
+          document.getElementById("commentEntry").value="";
+        }
       }
 
       function closeForm() {
         document.getElementById("myForm").style.display = "none";
       }
 
-      function enterComment(checkpriv,latt,longg,currentZoom,toc_='none',name=null){
-          if(checkpriv=='common')
-            {
-              confirm('This comment will be visible to everyone. Do you want to continue ?');
-            }
-          var userComment=prompt("Enter Comment");
+      function enterComment(userComment,checkpriv,latt,longg,currentZoom,toc_,name){
+        
           if(userComment!=null){
           sessionComments = [];
           var data_ =  JSON.stringify({commentor: sessionUser,
@@ -1170,26 +1231,25 @@
           },
           complete: function(){
             document.getElementById('commentsDiv').innerHTML = `<div id="selfComments"></div>
-                    <div id="publicComments"></div>`;
-            /* document.getElementById('publicComments').innerHTML=''; */
+                    <div id="publicComments"><hr></div>`;
             var pubComments = $("#publicComments");
             pubComments.append(`<b>Public Comments:</b>`);
             var selfComments = $("#selfComments");
-            selfComments.append(`<b>Your Comments:</b>`);
+            selfComments.append(`<b>Your Comments:</b><hr>`);
             for(var i = 0; i < sessionComments.length;i++){
               if(sessionComments[i].self_common == 'common'&&sessionComments[i].commentor!=sessionUser){
-                pubComments.append(`<p class ="ptag">
-                  <button onclick = "getLayer('${sessionComments[i].name}',${sessionComments[i].lattitude},${sessionComments[i].longitude},${sessionComments[i].currentZoom})" style= "background:none; border:none">
+                pubComments.append(`<p class ="ptag" id="combut`+i+`"`+` style="justify-items:left">
+                  <button onclick = "getLayer('${sessionComments[i].name}',${sessionComments[i].lattitude},${sessionComments[i].longitude},${sessionComments[i].currentZoom},${i})" style= "background:none; border:none; text-align:left">
                     ${sessionComments[i].commentor}: ${sessionComments[i].comment_}
                   </button>
-                    <button onclick = "resolveComment(${sessionComments[i].id})">done</button>
+                    <button onclick = "resolveComment(${sessionComments[i].id})" class="checkBox">✓</button>
                   </p><span style="background-color:#E0E000"></span>`)
               }
               else if(sessionComments[i].commentor == sessionUser){
-                selfComments.append(`<p class ="ptag"><button onclick = "getLayer('${sessionComments[i].name}',${sessionComments[i].lattitude},${sessionComments[i].longitude},${sessionComments[i].currentZoom})" style= "background:none; border:none"> 
+                selfComments.append(`<p class ="ptag" id="combut`+i+`"`+` style="justify-items:left"><button onclick = "getLayer('${sessionComments[i].name}',${sessionComments[i].lattitude},${sessionComments[i].longitude},${sessionComments[i].currentZoom},${i})" style= "background:none; border:none; text-align:left"> 
                   You: ${sessionComments[i].comment_} 
                 </button>
-                    <button onclick = "resolveComment(${sessionComments[i].id})">done</button>
+                    <button onclick = "resolveComment(${sessionComments[i].id})" class="checkBox">✓</button>
                   </p>`)
               }
             }
@@ -1212,6 +1272,7 @@
           }
         })
       }
+
       
       function  getComments(){   //gets all comments for session (self and common comments)
         var comments = [];
@@ -1234,23 +1295,23 @@
                     <div id="publicComments"></div>`;
             /* document.getElementById('publicComments').innerHTML=''; */
             var pubComments = $("#publicComments");
-            pubComments.append(`<b>Public Comments:</b>`);
+            pubComments.append(`<b>Public Comments:</b><hr>`);
             var selfComments = $("#selfComments");
-            selfComments.append(`<b>Your Comments:</b>`);
+            selfComments.append(`<b>Your Comments:</b><hr>`);
             for(var i = 0; i < sessionComments.length;i++){
               if(sessionComments[i].self_common == 'common'&&sessionComments[i].commentor!=sessionUser){
-                pubComments.append(`<p class ="ptag">
-                  <button onclick = "getLayer('${sessionComments[i].name}',${sessionComments[i].lattitude},${sessionComments[i].longitude},${sessionComments[i].currentZoom})" style= "background:none; border:none">
+                pubComments.append(`<p class ="ptag" id="combut`+i+`"`+` style="justify-items:left">
+                  <button onclick = "getLayer('${sessionComments[i].name}',${sessionComments[i].lattitude},${sessionComments[i].longitude},${sessionComments[i].currentZoom},${i})" style= "background:none; border:none; text-align:left">
                     ${sessionComments[i].commentor}: ${sessionComments[i].comment_}
                   </button>
-                    <button onclick = "resolveComment(${sessionComments[i].id})">done</button>
+                    <button onclick = "resolveComment(${sessionComments[i].id})" class="checkBox">✓</button>
                   </p><span style="background-color:#E0E000"></span>`)
               }
               else if(sessionComments[i].commentor == sessionUser){
-                selfComments.append(`<p class ="ptag"><button onclick = "getLayer('${sessionComments[i].name}',${sessionComments[i].lattitude},${sessionComments[i].longitude},${sessionComments[i].currentZoom})" style= "background:none; border:none"> 
+                selfComments.append(`<p class ="ptag" id="combut`+i+`"`+` style="justify-items:left"><button onclick = "getLayer('${sessionComments[i].name}',${sessionComments[i].lattitude},${sessionComments[i].longitude},${sessionComments[i].currentZoom},${i})" style= "background:none; border:none; text-align:left"> 
                   You: ${sessionComments[i].comment_} 
                 </button>
-                    <button onclick = "resolveComment(${sessionComments[i].id})">done</button>
+                    <button onclick = "resolveComment(${sessionComments[i].id})" class="checkBox">✓</button>
                   </p>`)
               }
             }
@@ -1258,12 +1319,24 @@
         })
       }
       
-      function getLayer(name_,lat,long,cZoom)
+      function getLayer(name_,lat,long,cZoom,i)
       {
-        mymap.setZoom(cZoom);
-        mymap.panTo([lat,long]);
+        if(lat!=null||long!=null||cZoom!=null){
+          mymap.setZoom(cZoom);
+          mymap.panTo([lat,long]);
+        }
         if(name_!=undefined){
-        layers[name_].addTo(mymap);
+          /* layers[name_].addTo(mymap); */
+          for (var j=0;j<sessionComments.length;j++){
+            if(j===i){
+              var element = document.getElementById("combut"+j);
+              element.style.fontWeight = "600";
+            }
+            else{
+              var element = document.getElementById("combut"+j);
+              element.style.fontWeight = "normal";
+            }
+        }
       }}
 
       function showBranches() {
@@ -1603,14 +1676,14 @@
         icon: 'images/addcomment.png',
         callback: function(e){
           var currentZoom = mymap.getZoom();
-          enterComment('self',e.latlng['lat'],e.latlng['lng'],currentZoom);
+          openForm('self',e.latlng['lat'],e.latlng['lng'],currentZoom);
         }
     },{
         text: 'Add public comment',
         icon: 'images/pubcomment.jpg',
         callback: function(e){
           var currentZoom = mymap.getZoom();
-          enterComment('common',e.latlng['lat'],e.latlng['lng'],currentZoom);
+          openForm('common',e.latlng['lat'],e.latlng['lng'],currentZoom);
         }
     }]
     }).setView(
@@ -1761,7 +1834,7 @@
             callback: function(e){
                                   var currentZoom = mymap.getZoom();
                                   var geojsonmarker = marker1.toGeoJSON()
-                                  enterComment('self',e.latlng['lat'],e.latlng['lng'],currentZoom,'marker','marker1');
+                                  openForm('self',e.latlng['lat'],e.latlng['lng'],currentZoom,'marker','marker1');
                                 }
           }
         ]
@@ -1789,7 +1862,7 @@
             callback: function(e){
                                   var currentZoom = mymap.getZoom();
                                   var geojsonpoly = polygon1.toGeoJSON()
-                                  enterComment('self',e.latlng['lat'],e.latlng['lng'],currentZoom,'polygon','polygon1');
+                                  openForm('self',e.latlng['lat'],e.latlng['lng'],currentZoom,'polygon','polygon1');
                                 }
           }
         ]
@@ -4121,7 +4194,7 @@ function addNewPoly(oldPoly,newPoly) {
             id="GroupSelect"
             style="margin-bottom: 5px; width: 100%"
           ></div>
-          
+            
           <div
             class="input-group"
             onchange="get_Data()"
@@ -4157,12 +4230,23 @@ function addNewPoly(oldPoly,newPoly) {
           <!-- class="branchButton"  -->
           <div id="distSelect"></div>
           </div>
+          <!-- <button class="open-button" onclick="openForm()">Open Form</button> -->
+          <div action="" class="form-popup" id="myForm">
+            <form  class="form-container">
+
+              <label id="commentLabel" for="email"><b>Email</b></label>
+              <input type="text" placeholder="Comment" id="commentEntry" required>
+          
+              <button id="submitbutton" type="button" class="btn">Submit</button>
+              <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+            </form>
+          </div>
                 <div class = 'collapsiblediv'>
                   <button class="collapsible">
                     <ion-icon name="chatbox">
                     </ion-icon>
                   </button>
-                  <div id = commentsDiv class="content">
+                  <div id = 'commentsDiv' class="content">
                     
                   </div>
                 </div>
@@ -4285,19 +4369,11 @@ function addNewPoly(oldPoly,newPoly) {
           <div id="BRANCHES" style="text-align: center"></div>
         </div>
       </div>
+      
+      
     </div>
 
-    <div class="form-popup" id="myForm">
-      <form action="/action_page.php" class="form-container">
-        <h1>Login</h1>
     
-        <label for="email"><b>Comment:</b></label>
-        <input type="text" placeholder="Enter Email" name="email" required>
-    
-        <button type="submit" class="btn">Login</button>
-        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-      </form>
-    </div>
     
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
