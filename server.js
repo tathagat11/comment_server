@@ -29,6 +29,7 @@ app.route("/getcomments")
     let query = db.query(sql2, (err, results) => {
         if(err) throw err;
         res.send(results);
+        console.log(results);
     });
 });
 

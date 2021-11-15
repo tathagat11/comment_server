@@ -28,6 +28,7 @@
 
     <link rel="stylesheet" href="Scripts/leaflet-routing-machine.css" />
 
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="Scripts/leaflet-tilelayer-colorfilter.min.js"></script>
     <script src="Scripts/Leaflet.EdgeMarker.js"></script>
     <script src="Scripts/leaflet.smoothmarkerbouncing.js"></script>
@@ -109,13 +110,16 @@
         background-color: grey;
       }
 
+      
       #commentsDiv hr{
+        
         margin-bottom: 4px;
         height:2px;
         border-width:0;
-        color:gray;
-        background-color:gray
+        color:rgb(190, 190, 190);
+        background-color:rgb(190, 190, 190)
       }
+      
 
       #commentsDiv .checkBox{
         background-color: white;  
@@ -132,44 +136,67 @@
         transform: translateY(2px);
       }
 
+      #selfCommentsParent{
+        border: 2px solid rgb(190, 190, 190);;
+        margin: 5px 5px;
+        border-radius: 2%;
+        justify-self: center;
+      }
+      #publicCommentsParent{
+        border: 2px solid rgb(190, 190, 190);
+        border-radius: 2%;
+        margin: 5px 5px;
+        justify-self: center;
+      }
       
       #publicComments{
+        border-top: 2px black;
         margin-top: 5px;
         overflow-y: auto;
         overflow-x:auto;
-        max-height: 120px;
+        max-height: 200px;
         padding-bottom: 10px;
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 18px;
       }
 
       #selfComments{
         margin-top: 8px;
         overflow-y: auto;
         overflow-x:auto;
-        max-height: 120px;
+        max-height: 190px;
         padding-bottom: 10px;
+        padding-left: 18px;
+        padding-right: 18px;
       }
 
       .collapsiblediv {
         border: 0;
         position: absolute;
-        top: 150px;
+        bottom: 80px;
         right: 20px;
-        width: 250px;
+        width: 300px;
       }
 
       .collapsible {
+        
         position: relative;
-        right: -200px;;
+        right: -233px;
         background-color: #007988;
         color: white;
         cursor: pointer;
-        padding: 10px;
+        border-right: 100px;
+        width: 65px;
+        height: 40px;
         border-radius: 5px;
         transition: 0.5s;
         border: 1px;
-        text-align: left;
+        text-align: center;
         outline: none;
-        font-size: 15px;
+        font-size: 25px;
+        padding-top: 4px;
+        padding-bottom: 4px;
       }
 
       .active, .collapsible:hover {
@@ -191,13 +218,14 @@
       } */
 
       .content {
-        padding: 0 18px;
+        box-shadow: 0 0 10px;
+        padding: 0 0px;
         max-height: 0px;
         overflow-x:hidden; 
         overflow-y: hidden;
         text-align:left;
         transition: max-height 0.2s ease-out;
-        background-color: #f0f0f0;
+        background-color: white;
         border-radius: 5px;
       }
 
@@ -1134,9 +1162,10 @@
       var Prev_HeatLayer;
       var editedLayer;
       var sessionComments = [];
-      var sessionUser = 'Madhav';
+      var sessionUser = 'Tathagat';
 
       window.onload = async function () {
+
         //await _vD.validate(sessionStorage.getItem('username'),sessionStorage.getItem('Type'),sessionStorage.getItem('token'));
         let page_title = sessionStorage.getItem("sitename");
         if (page_title && page_title != "")
@@ -1155,6 +1184,8 @@
         
         kmlContentGlobal=await readStaticKML("./kmlFILE.kml");
 
+
+        //coments functions
         getComments();
         
         
@@ -1169,7 +1200,7 @@
             if (content.style.maxHeight){
               content.style.maxHeight = null;
             } else {
-              content.style.maxHeight = "300" + "px";
+              content.style.maxHeight = "500" + "px";
             } 
           });
         }
@@ -1198,6 +1229,7 @@
           var userComment = document.getElementById("commentEntry").value;
           enterComment(userComment,checkpriv,latt,longg,currentZoom,toc_,name);
           document.getElementById("commentEntry").value="";
+          closeForm();
         }
       }
 
@@ -1230,12 +1262,11 @@
             } 
           },
           complete: function(){
-            document.getElementById('commentsDiv').innerHTML = `<div id="selfComments"></div>
-                    <div id="publicComments"><hr></div>`;
+            document.getElementById('publicComments').innerHTML= '';
             var pubComments = $("#publicComments");
-            pubComments.append(`<b>Public Comments:</b>`);
+            document.getElementById('selfComments').innerHTML= '';
             var selfComments = $("#selfComments");
-            selfComments.append(`<b>Your Comments:</b><hr>`);
+            
             for(var i = 0; i < sessionComments.length;i++){
               if(sessionComments[i].self_common == 'common'&&sessionComments[i].commentor!=sessionUser){
                 pubComments.append(`<p class ="ptag" id="combut`+i+`"`+` style="justify-items:left">
@@ -1258,19 +1289,33 @@
       }}
 
       function resolveComment(id){
-        $.ajax({
-          url: '/rescomments',
-          contentType: 'application/json',
-          method: 'POST',
-          data: JSON.stringify({id: id}),
-          success: function(data) {
-            console.log('resolve comments sent')
-          },
-          complete: function(){
-            sessionComments=[];
-            getComments();
-          }
+        swal({
+            icon:"warning",
+            title: "Are you sure you want to resolve this comment?",
+            text: "You will not be able to recover it!",
+            buttons:true
+        }).then(
+        function(isConfirm){
+          if (isConfirm){
+            $.ajax({
+              url: '/rescomments',
+              contentType: 'application/json',
+              method: 'POST',
+              data: JSON.stringify({id: id}),
+              success: function(data) {
+                console.log('resolve comments sent')
+              },
+              complete: function(){
+                sessionComments=[];
+                getComments();
+              }
         })
+        } else {
+              return;
+            };
+          });
+
+        
       }
 
       
@@ -1291,13 +1336,11 @@
             } 
           },
           complete: function(){
-            document.getElementById('commentsDiv').innerHTML = `<div id="selfComments"></div>
-                    <div id="publicComments"></div>`;
             /* document.getElementById('publicComments').innerHTML=''; */
+            document.getElementById('publicComments').innerHTML= '';
             var pubComments = $("#publicComments");
-            pubComments.append(`<b>Public Comments:</b><hr>`);
+            document.getElementById('selfComments').innerHTML= '';
             var selfComments = $("#selfComments");
-            selfComments.append(`<b>Your Comments:</b><hr>`);
             for(var i = 0; i < sessionComments.length;i++){
               if(sessionComments[i].self_common == 'common'&&sessionComments[i].commentor!=sessionUser){
                 pubComments.append(`<p class ="ptag" id="combut`+i+`"`+` style="justify-items:left">
@@ -1337,7 +1380,16 @@
               element.style.fontWeight = "normal";
             }
         }
+        if(name_.startsWith('POLYSUB')){
+          if(document.getElementById(name_).checked==false){
+            Poly_id_Layer[name_].addTo(mymap);
+            document.getElementById(name_).checked=true;
+          }
+        }
       }}
+
+
+      //comments functions end
 
       function showBranches() {
         Read_Branches(); // Config from local json
@@ -1834,7 +1886,7 @@
             callback: function(e){
                                   var currentZoom = mymap.getZoom();
                                   var geojsonmarker = marker1.toGeoJSON()
-                                  openForm('self',e.latlng['lat'],e.latlng['lng'],currentZoom,'marker','marker1');
+                                  openForm('common',e.latlng['lat'],e.latlng['lng'],currentZoom,'marker','marker1');
                                 }
           }
         ]
@@ -1861,8 +1913,7 @@
             index: 2,
             callback: function(e){
                                   var currentZoom = mymap.getZoom();
-                                  var geojsonpoly = polygon1.toGeoJSON()
-                                  openForm('self',e.latlng['lat'],e.latlng['lng'],currentZoom,'polygon','polygon1');
+                                  openForm('common',e.latlng['lat'],e.latlng['lng'],currentZoom,'polygon','polygon1');
                                 }
           }
         ]
@@ -3148,6 +3199,7 @@ function addNewPoly(oldPoly,newPoly) {
       async function drawPolygons(DataArray, isWard) {
         var innerBox = "";
         var NameAsId = "POLY" + (PolyLayers.length + 1);
+        console.log(PolyLayers);
         function eachLayerFeature(feature, layer) {
           layer.on({
             mouseover: function (e) {
@@ -3163,6 +3215,7 @@ function addNewPoly(oldPoly,newPoly) {
               });
             },
           });
+          
           let content = "<b>Name: </b>" + feature.properties.name;
           for (var key in feature.properties.AdonProp)
             content =
@@ -3211,7 +3264,18 @@ function addNewPoly(oldPoly,newPoly) {
               }).addTo(mymap);
               _prevLayer = e.target;
             });
-            
+            layer.bindContextMenu({
+            contextmenu: true,
+            contextmenuInheritItems: false,
+            contextmenuItems:[{
+              index: 0,
+              text: 'Add comment to polygon',
+              callback: function(e){
+                var currentZoom = mymap.getZoom();
+                openForm('common',e.latlng['lat'],e.latlng['lng'],currentZoom,'polygon',nameId);
+              }
+            }]
+          })
           } else {
             if (feature.properties.AdonProp) {
               if (
@@ -3294,14 +3358,6 @@ function addNewPoly(oldPoly,newPoly) {
             };
           },
           onEachFeature: eachLayerFeature,
-          contextmenu: true,
-          contextmenuInheritItems: false,
-          contextmenuItems:[{
-            index: 0,
-            text: 'Polygon',
-            callback: function(e){console.log(e);}
-          }
-        ]
         });
         WholePolygon.addLayer(PolyLayer);
         mymap.fitBounds(WholePolygon.getBounds());
@@ -3323,7 +3379,7 @@ function addNewPoly(oldPoly,newPoly) {
           $("#distSelect").append(
             '<div style="margin-top: 10px;"><input type="checkbox" value="' +
               NameAsId +
-              '" checked onclick="TogglePolygons(this);" name="HeadPoly"/>&nbsp;<b>' +
+              '" checked onclick="TogglePolygons(this);" id="HeadPoly"/>&nbsp;<b>' +
               DataArray.name +
               "</b></div>" +
               innerBox
@@ -4241,13 +4297,24 @@ function addNewPoly(oldPoly,newPoly) {
               <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
             </form>
           </div>
+                
                 <div class = 'collapsiblediv'>
                   <button class="collapsible">
                     <ion-icon name="chatbox">
                     </ion-icon>
                   </button>
+                  
                   <div id = 'commentsDiv' class="content">
-                    
+                    <div id = "selfCommentsParent">
+                      <p style="text-align: center; font-weight: bold; padding-top: 6px;">Your Comments:</p>
+                      <hr>
+                      <div id="selfComments"></div>
+                    </div>
+                    <div id="publicCommentsParent">
+                      <p style="text-align: center; font-weight: bold; padding-top: 5px;">Public Comments:</p>
+                      <hr>
+                      <div id="publicComments"></div>
+                    </div>
                   </div>
                 </div>
         <div style="text-align: center">
